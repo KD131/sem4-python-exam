@@ -1,7 +1,9 @@
 from __future__ import print_function
+from calendar import calendar
 
 import datetime
 import os.path
+import json
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -9,8 +11,37 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
+
+event = {
+  'summary': 'Google I/O 2015',
+  'location': '800 Howard St., San Francisco, CA 94103',
+  'description': 'A chance to hear more about Google\'s developer products.',
+  'start': {
+    'dateTime': '2022-05-03T09:00:00-07:00',
+    'timeZone': 'America/Los_Angeles',
+  },
+  'end': {
+    'dateTime': '2022-05-04T17:00:00-07:00',
+    'timeZone': 'America/Los_Angeles',
+  },
+  'recurrence': [
+    'RRULE:FREQ=DAILY;COUNT=2'
+  ],
+  'attendees': [
+    {'email': 'lpage@example.com'},
+    {'email': 'sbrin@example.com'},
+  ],
+  'reminders': {
+    'useDefault': False,
+    'overrides': [
+      {'method': 'email', 'minutes': 24 * 60},
+      {'method': 'popup', 'minutes': 10},
+    ],
+  },
+}
 
 
 def main():
@@ -37,6 +68,36 @@ def main():
 
     try:
         service = build('calendar', 'v3', credentials=creds)
+        global event
+
+
+        #create a test event.
+        #service.events().insert(calendarId='primary',body=event).execute()
+
+
+        #check if busy
+        busyRequest= {
+            "timeMin": "2022-05-02T09:00:00-07:00",
+            "timeMax": "2022-05-04T09:00:00-07:00",
+            "groupExpansionMax": 50,
+            "calendarExpansionMax": 50,
+            "items": [
+                 {
+                 "id":'primary'
+                 }
+             ]
+        }
+
+        #check if busy. No event description Det er shit, vi skal ikke bruge den.
+        reponse = service.freebusy().query(body=busyRequest).execute()
+        #print(reponse)
+
+
+        #find busy by events.list(). returns list of event in time interval.
+        eventCheck = service.events().list(calendarId='primary',timeMin="2022-05-03T09:00:00-07:00",timeMax='2022-05-04T17:00:00-07:00').execute()
+        print(eventCheck)
+
+
 
         # Call the Calendar API
         now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
@@ -45,7 +106,7 @@ def main():
                                               maxResults=10, singleEvents=True,
                                               orderBy='startTime').execute()
         events = events_result.get('items', [])
-
+        
         if not events:
             print('No upcoming events found.')
             return
@@ -57,7 +118,12 @@ def main():
 
     except HttpError as error:
         print('An error occurred: %s' % error)
+        
+
+
 
 
 if __name__ == '__main__':
     main()
+
+
