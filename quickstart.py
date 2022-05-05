@@ -2,6 +2,7 @@ from __future__ import print_function
 import base64
 
 import datetime
+from email import message
 import json
 import os.path
 from calendar import calendar
@@ -122,22 +123,38 @@ def main():
         # If we return a list of more than 100, we might want to up the maxResults param. If more than 500, we need list_next().
         mails_response = gmail.users().messages().list(userId='me').execute()
         mails = mails_response['messages']
-        m = mails[0]
-        # for m in mails:
-        actual_mail = gmail.users().messages().get(userId='me', id=m['id']).execute()
-        print(json.dumps(actual_mail, indent=4))
-        parts = actual_mail['payload']['parts']
-        # We can iterate through the parts and find the right one, or we can just say that the plain text is always the first element.
-        # If we iterate, it'd be something like checking partId == '0', mimeType == 'text/plain', even iterating through headers and finding name == 'Content-Type' and value == 'text/plain; charset=\"UTF-8\"'
-        # Basically, there's a lot more validation we can do, but is probably not needed.
-        # Actually, I think we need to recursively dig to find the plain text. Oof.
-        data = parts[0]['body']['data']
-        message = base64.b64decode(data.encode()).decode()
-        print(message)
+        
+        for m in mails:
+            actual_mail = gmail.users().messages().get(userId='me', id=m['id']).execute()
+            message = getPlainText(actual_mail)
+            print(message)
 
     except HttpError as error:
         print('An error occurred: %s' % error)
         
+
+# Can be refactored to take the target type as a parameter, i.e. getContent(mail, target='text/plain')
+def getPlainText(mail):
+    payload = mail['payload']
+
+    def recurse(part):
+        """Depth-First Search (DFS).
+        Takes an element containing a mimeType attribute, such as the payload of the email and any sub-parts.
+        """
+        mime_type = part['mimeType']
+        if mime_type == 'text/plain':
+            return part['body']['data']
+        elif mime_type.startswith('multipart'):
+            for p in part['parts']:
+                res = recurse(p)
+                if res:
+                    return res
+        else:
+            return None
+
+    data = recurse(payload)
+    message = base64.urlsafe_b64decode(data.encode()).decode()
+    return message
 
 
 if __name__ == '__main__':
