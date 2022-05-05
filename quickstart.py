@@ -133,7 +133,8 @@ def main():
         print('An error occurred: %s' % error)
         
 
-# Can be refactored to take the target type as a parameter, i.e. getContent(mail, target='text/plain')
+# Can be refactored to take the target type as a parameter, i.e. getContent(mail, target='text/plain').
+# This would allow you to search for something else like html if needed
 def getPlainText(mail):
     payload = mail['payload']
 
