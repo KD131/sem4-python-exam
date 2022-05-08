@@ -6,6 +6,7 @@ from email import message
 import json
 import os.path
 from calendar import calendar
+import requests
 
 import uuid
 
@@ -47,6 +48,8 @@ event = {
 }
 
 
+
+
 def main():
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
@@ -73,10 +76,20 @@ def main():
         service = build('calendar', 'v3', credentials=creds)
         gmail = build('gmail', 'v1', credentials=creds)
         global event
-        print(createWatch())
+        
 
+        watchurl = "https://www.googleapis.com/calendar/v3/calendars/pythondiller@gmail.com/events/watch"
+        data = {
+         
+                "id" : "3333",
+               "type": "web_hook",
+               "address": 'http://elcaptaino.duckdns.org/webhook',
+         
+      }
 
+        r = requests.post(watchurl,data=json.dumps(data), headers={'Content-Type': 'application/json','Authorization': "ya29.A0ARrdaM-U-qUpek2G4J__j35XyeF-feLIoLp1jR1MR-bffSjn--YWVtFnMsBJMWfz6ej1AQOlYbwFxojc4fjN7XefqGX2pTCGrQPTXIglmzlBZnT_MT1L0lY4K7NqbiE22CPMKXesEdxna5N-uBVSd70Mvvce"},)
 
+        print(r)
 
 
         def createWatch():
@@ -84,11 +97,17 @@ def main():
          "calendarId": "primary",
          "token": creds,
          "requestBody": {
-               "id" : uuid(),
+               "id" : "3333",
                "type": "web_hook",
                "address": 'http://elcaptaino.duckdns.org/webhook',
          }
       })
+
+        #print(createWatch())
+
+
+
+
 
 
         #create a test event.
