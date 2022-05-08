@@ -7,6 +7,8 @@ import json
 import os.path
 from calendar import calendar
 
+import uuid
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -71,6 +73,22 @@ def main():
         service = build('calendar', 'v3', credentials=creds)
         gmail = build('gmail', 'v1', credentials=creds)
         global event
+        print(createWatch())
+
+
+
+
+
+        def createWatch():
+         service.events.watch({
+         "calendarId": "primary",
+         "token": creds,
+         "requestBody": {
+               "id" : uuid(),
+               "type": "web_hook",
+               "address": 'http://elcaptaino.duckdns.org/webhook',
+         }
+      })
 
 
         #create a test event.
@@ -97,7 +115,7 @@ def main():
 
         #find busy by events.list(). returns list of event in time interval.
         eventCheck = service.events().list(calendarId='primary',timeMin="2022-05-03T09:00:00-07:00",timeMax='2022-05-04T17:00:00-07:00').execute()
-        print(eventCheck)
+        #print(eventCheck)
 
 
 

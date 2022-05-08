@@ -17,7 +17,7 @@ def webhook():
 
 @app.route('/')
 def catch_all():
-    return 'current sites /webhook'
+    return 'current hooks /webhook. POST:{test:test}'
 
 
 if __name__ == '__main__':

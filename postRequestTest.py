@@ -1,9 +1,10 @@
 import requests
 import json
+import uuid 
 
 
 
-webhook_url = 'http://elcaptaino.duckdns.org:8000/webhook'
+webhook_url = 'http://elcaptaino.duckdns.org/webhook'
 
 data = {
     "test":"test" }
