@@ -15,6 +15,10 @@ def webhook():
 
 #Create watch channel 
 
+@app.route('/')
+def catch_all():
+    return 'current sites /webhook'
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)       

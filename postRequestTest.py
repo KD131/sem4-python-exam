@@ -3,7 +3,7 @@ import json
 
 
 
-webhook_url = 'http://87.59.207.21:8000/webhook'
+webhook_url = 'http://elcaptaino.duckdns.org:8000/webhook'
 
 data = {
     "test":"test" }
