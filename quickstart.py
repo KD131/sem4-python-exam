@@ -78,6 +78,12 @@ def main():
         global event
         
 
+        request = {
+  'labelIds': ['INBOX'],
+  'topicName': 'projects/exam-project-349112/topics/exam-project-349112-topic'
+}
+        r = gmail.users().watch(userId='pythondiller@gmail.com', body=request).execute()
+
         watchurl = "https://www.googleapis.com/calendar/v3/calendars/pythondiller@gmail.com/events/watch"
         data = {
          

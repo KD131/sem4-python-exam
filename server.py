@@ -1,25 +1,45 @@
-from flask import Flask,request, abort
+from flask import Flask,request, abort,render_template 
+import sys
+import datetime
 
 app = Flask(__name__)
+
+filePath = '/templates/serverConsole.txt'
+
 
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        print(request.json)
+        writeToFile(request.json)
         return 'success', 200
 
     else:
-        print(request.json)
-        abort(400)
-
-
-#Create watch channel 
+        print(request)
+        writeToFile(abort(400))
+        
 
 @app.route('/')
 def catch_all():
-    print(request.json)
-    return 'current hooks /webhook. POST:{test:test}'
+    with open(filePath, 'r') as f: 
+	    return render_template('console.html', text=f.read()) 
+
+
+@app.route('/clear')
+def clearLog():
+    with open(filePath, "w") as f:
+        f.write('')
+        f.close()
+    return 'Log cleared'
+
+
+def writeToFile(printText):
+
+    sys.stdout = open(filePath, "a")
+    currenttime = datetime.datetime.now()
+    print(currenttime, printText)
+    sys.stdout.close()
+
 
 
 if __name__ == '__main__':
