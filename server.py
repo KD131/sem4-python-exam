@@ -4,7 +4,7 @@ import datetime
 
 app = Flask(__name__)
 
-filePath = '/templates/serverConsole.txt'
+filePath = 'templates/serverConsole.txt'
 
 
 
