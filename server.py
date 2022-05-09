@@ -10,6 +10,7 @@ def webhook():
         return 'success', 200
 
     else:
+        print(request.json)
         abort(400)
 
 
@@ -17,6 +18,7 @@ def webhook():
 
 @app.route('/')
 def catch_all():
+    print(request.json)
     return 'current hooks /webhook. POST:{test:test}'
 
 
