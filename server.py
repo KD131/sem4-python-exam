@@ -15,13 +15,15 @@ most_recent_history_id = None
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        writeToFile(request.json)
+        # writeToFile(request.json)
         # decoded = base64.urlsafe_b64decode(request.json['message']['data'].encode()).decode()
         # decoded_dict = json.loads(decoded)
         # history_id = decoded_dict['historyId']
+        global most_recent_history_id
         res = gmail.doShitWithHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
-        writeToFile(res)
+        print(most_recent_history_id)
+        # writeToFile(res)
         
         
         return 'success', 200
