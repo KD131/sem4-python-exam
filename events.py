@@ -6,25 +6,27 @@ from googleapiclient.errors import HttpError
 
 from credentials import getCreds
 
+
 def getService():
     try:
         calendar = build('calendar', 'v3', credentials=getCreds())
         return calendar
-        
+
     except HttpError as error:
         print('An error occurred: %s' % error)
 
 
 calendar = getService()
 
+
 def getUpcoming():
     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
     events_result = calendar.events().list(calendarId='primary', timeMin=now,
-                                            maxResults=10, singleEvents=True,
-                                            orderBy='startTime').execute()
+                                           maxResults=10, singleEvents=True,
+                                           orderBy='startTime').execute()
     events = events_result.get('items', [])
-    
+
     if not events:
         print('No upcoming events found.')
         return
@@ -37,16 +39,17 @@ def getUpcoming():
 
 def isBusy(timeMin, timeMax):
     """timeMin and timeMax are RFC3339 timestamps"""
-    res = calendar.events().list(calendarId='primary',timeMin=timeMin,timeMax=timeMax).execute()
+    res = calendar.events().list(calendarId='primary',
+                                 timeMin=timeMin, timeMax=timeMax).execute()
     items = res.get('items')
     if not items:
         return False
-    
+
     for item in items:
         creator = item['creator']
         if creator.get('self') == True:
             return True
-        
+
         attendees = item.get('attendees')
         if attendees:
             for a in attendees:
@@ -54,8 +57,21 @@ def isBusy(timeMin, timeMax):
                     return True
     return False
 
-def createEvent(event):
-    calendar.events().insert(calendarId='primary',body=event).execute()
+
+def createEvent(title,description, tag, timeMin, timeMax):
+    requestBody = {
+        'summary': f'[{tag}]' + title,
+        'description': description,
+        'start': {
+            'dateTime': timeMin,
+        },
+        'end': {
+            'dateTime': timeMax,
+        }
+    }
+    r = calendar.events().insert(calendarId='primary', body=requestBody).execute()
+    print(r)
+
 
 event = {
     'summary': 'Google I/O 2015',
@@ -85,12 +101,24 @@ event = {
     },
 }
 
+def main(network_response):
+    if isBusy(network_response['timeMin'],network_response['timeMax']):
+        #skriv en mail retur vi ikke kan
+        print('nej')       
+    else:
+        createEvent(**network_response)
+        #lave et eller andet der bekræfter vi har fået noget i kalenderen.
+        #skriv email til sender at vi kan
+      
+
 if __name__ == '__main__':
     network_response = {
-        'timeMin': '2022-05-3T13:00:00+02:00',
-        'timeMax': '2022-05-10T16:30:00+02:00'
+        'title': 'Title on event',
+        'description': 'Selve email tekst',
+        'tag': 'social',  # social/business
+        'timeMin': '2022-05-15T13:00:00+02:00',
+        'timeMax': '2022-05-15T16:30:00+02:00'
     }
-    # res = isBusy(network_response['timeMin'], network_response['timeMax'])
-    res = isBusy(**network_response)
-    print(res)
-
+    main(network_response)
+  
+    
