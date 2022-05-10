@@ -55,14 +55,7 @@ event = {
 
 
 def main():
-    #Downloads the differents nltk packages. outcomment first time to download them. 
-    #nltk.download('punkt')
-    #nltk.download('stopwords')
-    #nltk.download('wordnet')
-    #nltk.download('averaged_perceptron_tagger') # for POS_tag
-    #nltk.download('maxent_ne_chunker') # for NER
-    #nltk.download('words')
-    #nltk.download('omw-1.4')
+    
 
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
