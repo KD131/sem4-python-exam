@@ -87,9 +87,10 @@ event = {
 
 if __name__ == '__main__':
     network_response = {
-        'timeMin': '2022-05-10T14:00:00+02:00',
-        'timeMax': '2022-05-10T15:30:00+02:00'
+        'timeMin': '2022-05-3T13:00:00+02:00',
+        'timeMax': '2022-05-10T16:30:00+02:00'
     }
-    res = isBusy(network_response['timeMin'], network_response['timeMax'])
+    # res = isBusy(network_response['timeMin'], network_response['timeMax'])
+    res = isBusy(**network_response)
     print(res)
 
