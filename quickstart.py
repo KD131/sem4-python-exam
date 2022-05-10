@@ -1,11 +1,13 @@
 from __future__ import print_function
 import base64
 
-
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
+
+
+from string import punctuation
 
 import datetime
 from email import message
@@ -60,6 +62,7 @@ def main():
     #nltk.download('averaged_perceptron_tagger') # for POS_tag
     #nltk.download('maxent_ne_chunker') # for NER
     #nltk.download('words')
+    #nltk.download('omw-1.4')
 
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
@@ -172,46 +175,6 @@ def getPlainText(mail):
     message = base64.urlsafe_b64decode(data.encode()).decode()
     return message
 
-
-#Trying to make nltk work.
-text = "Hello, my name isn't Kasper but August. CAN YOU believe that? I am born in 1993."
-
-
-def cleaningText(text):
-    #Tokenizes the text
-    tokens = word_tokenize(text)
-    tokens = list(map(str.lower,tokens))
-
-    #if we want to remove stopwords ("this, and , are , is")
-    #stop_words = set(stopwords.words('english'))
-    #tokens = [w for w in tokens if not w in stop_words]
-
-    #stemming the text with PorterStemmer
-    #This init the stemmer.
-    #stemmer = PorterStemmer()
-    #words=["connect","connected","connection","connections","connects","house","housing"] #Word to see if the stemmer is working 
-    #stemmed_words = [stemmer.stem(word=word) for word in tokens]
-    #print(stemmed_words)
-
-    #stemming the text with SnowballStemmer this is in general better, and can take different language as danish!
-    #Init the stemmer
-    #sn_stemmer = SnowballStemmer("english") # Can be change to danish
-    #words=["connect","connected","connection","connections","connects","house","housing"] #Word to see if the stemmer is working 
-    #stemmed_words = [sn_stemmer.stem(word=word) for word in tokens]
-    #print(stemmed_words)
-
-    #Lemmatization considers the context and converts the word to its meaningful base form, which is called Lemma. Sometimes, the same word can have multiple different Lemmas
-    #Init the lemma.
-    #lemmatizer = WordNetLemmatizer()
-    #words=["trouble","troubling","troubled","troubles"] #Words to see if the lemma is working. 
-    #lemmatized_words= [lemmatizer.lemmatize(word=word,pos='v') for word in tokens]
-    #print(lemmatized_words)
-
-    return tokens
-
-textUpdated = cleaningText(text)
-
-print(textUpdated)
 
 
 if __name__ == '__main__':
