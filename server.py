@@ -20,7 +20,7 @@ def webhook():
         # decoded_dict = json.loads(decoded)
         # history_id = decoded_dict['historyId']
         global most_recent_history_id
-        res = gmail.doShitWithHistory(most_recent_history_id)
+        res, messages = gmail.doShitWithHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
         print(most_recent_history_id)
         # writeToFile(res)

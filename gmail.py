@@ -70,12 +70,13 @@ def doShitWithHistory(history_id):
         for hist in history:
             for message in hist['messages']:
                 message_ids.append(message['id'])
-
+        
+        messages = []
         for id in message_ids:
             mail = gmail.users().messages().get(userId='me', id=id).execute()
-            print(getPlainText(mail))
+            messages.append(getPlainText(mail))
 
-    return res
+    return res, messages
 
 if __name__ == '__main__':
     # 2522
