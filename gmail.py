@@ -2,6 +2,8 @@ import base64
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+import json
+
 from credentials import getCreds
 
 def getService():
@@ -60,7 +62,21 @@ def createWatch():
     return r
 
 def doShitWithHistory(history_id):
-    pass
+    res = gmail.users().history().list(userId='me', startHistoryId=history_id).execute()
+
+    # message_ids = [message['id'] for message in history['messages'] for history in res['history']]
+    message_ids = []
+    for history in res['history']:
+        for message in history['messages']:
+            message_ids.append(message['id'])
+
+    for id in message_ids:
+        mail = gmail.users().messages().get(userId='me', id=id).execute()
+        print(getPlainText(mail))
+
+    return res
 
 if __name__ == '__main__':
-    getAllMails()
+    # 2522
+    # 2472
+    print(json.dumps(doShitWithHistory(2581), indent=4))
