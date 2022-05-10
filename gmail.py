@@ -81,4 +81,7 @@ def getEmailsFromHistory(history_id):
 if __name__ == '__main__':
     # 2522
     # 2472
-    print(json.dumps(getEmailsFromHistory(2581), indent=4))
+    res, messages = getEmailsFromHistory(2581)
+    print(json.dumps(res, indent=4))
+    for m in messages:
+        print(m)
