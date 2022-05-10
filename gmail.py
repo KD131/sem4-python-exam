@@ -61,7 +61,7 @@ def createWatch():
     r = gmail.users().watch(userId='me', body=request).execute()
     return r
 
-def doShitWithHistory(history_id):
+def getEmailsFromHistory(history_id):
     res = gmail.users().history().list(userId='me', startHistoryId=history_id).execute()
     # message_ids = [message['id'] for message in history['messages'] for history in res['history']]
     history = res.get('history')
@@ -81,4 +81,4 @@ def doShitWithHistory(history_id):
 if __name__ == '__main__':
     # 2522
     # 2472
-    print(json.dumps(doShitWithHistory(2581), indent=4))
+    print(json.dumps(getEmailsFromHistory(2581), indent=4))
