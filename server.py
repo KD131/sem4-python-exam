@@ -22,8 +22,7 @@ def webhook():
         global most_recent_history_id
         res, messages = gmail.getEmailsFromHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
-        print(most_recent_history_id)
-        # writeToFile(res)
+        writeToFile(messages)
         
         
         return 'success', 200
