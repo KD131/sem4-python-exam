@@ -1,5 +1,6 @@
 import base64
 import datetime
+import json
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -34,10 +35,24 @@ def getUpcoming():
         print(start, event['summary'])
 
 
-def checkBusy(timeMin, timeMax):
-    """timeMin and timeMax are datetimes"""
+def isBusy(timeMin, timeMax):
+    """timeMin and timeMax are RFC3339 timestamps"""
     res = calendar.events().list(calendarId='primary',timeMin=timeMin,timeMax=timeMax).execute()
-    return res
+    items = res.get('items')
+    if not items:
+        return False
+    
+    for item in items:
+        creator = item['creator']
+        if creator.get('self') == True:
+            return True
+        
+        attendees = item.get('attendees')
+        if attendees:
+            for a in attendees:
+                if a.get('self') == True and a.get('responseStatus') == 'accepted':
+                    return True
+    return False
 
 def createEvent(event):
     calendar.events().insert(calendarId='primary',body=event).execute()
@@ -69,4 +84,12 @@ event = {
         ],
     },
 }
+
+if __name__ == '__main__':
+    network_response = {
+        'timeMin': '2022-05-10T14:00:00+02:00',
+        'timeMax': '2022-05-10T15:30:00+02:00'
+    }
+    res = isBusy(network_response['timeMin'], network_response['timeMax'])
+    print(res)
 
