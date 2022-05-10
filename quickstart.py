@@ -82,7 +82,7 @@ def main():
   'labelIds': ['INBOX'],
   'topicName': 'projects/exam-project-349112/topics/exam-project-349112-topic'
 }
-        r = gmail.users().watch(userId='pythondiller@gmail.com', body=request).execute()
+        r = gmail.users().watch(userId='me', body=request).execute()
 
         watchurl = "https://www.googleapis.com/calendar/v3/calendars/pythondiller@gmail.com/events/watch"
         data = {
@@ -93,25 +93,22 @@ def main():
          
       }
 
-        r = requests.post(watchurl,data=json.dumps(data), headers={'Content-Type': 'application/json','Authorization': "ya29.A0ARrdaM-U-qUpek2G4J__j35XyeF-feLIoLp1jR1MR-bffSjn--YWVtFnMsBJMWfz6ej1AQOlYbwFxojc4fjN7XefqGX2pTCGrQPTXIglmzlBZnT_MT1L0lY4K7NqbiE22CPMKXesEdxna5N-uBVSd70Mvvce"},)
-
-        print(r)
+        #r = requests.post(watchurl,data=json.dumps(data), headers={'Content-Type': 'application/json','Authorization': "ya29.A0ARrdaM-U-qUpek2G4J__j35XyeF-feLIoLp1jR1MR-bffSjn--YWVtFnMsBJMWfz6ej1AQOlYbwFxojc4fjN7XefqGX2pTCGrQPTXIglmzlBZnT_MT1L0lY4K7NqbiE22CPMKXesEdxna5N-uBVSd70Mvvce"},)
 
 
         def createWatch():
-         service.events.watch({
+            r = service.events.watch({
          "calendarId": "primary",
-         "token": creds,
          "requestBody": {
-               "id" : "3333",
+               "id" : "f30ca5de-cfa4-11ec-9d64-0242ac120002",
                "type": "web_hook",
                "address": 'http://elcaptaino.duckdns.org/webhook',
          }
-      })
+      }) 
+            return r
 
-        #print(createWatch())
-
-
+        
+        print(createWatch())
 
 
 

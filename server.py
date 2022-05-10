@@ -12,6 +12,8 @@ filePath = 'templates/serverConsole.txt'
 def webhook():
     if request.method == 'POST':
         writeToFile(request.json)
+
+        
         return 'success', 200
 
     else:
@@ -34,7 +36,7 @@ def clearLog():
 
 
 def writeToFile(printText):
-
+    print(printText)
     sys.stdout = open(filePath, "a")
     currenttime = datetime.datetime.now()
     print(currenttime, printText)
