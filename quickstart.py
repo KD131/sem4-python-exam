@@ -14,6 +14,9 @@ from email import message
 import json
 import os.path
 from calendar import calendar
+import requests
+
+import uuid
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -54,6 +57,8 @@ event = {
 }
 
 
+
+
 def main():
     
 
@@ -82,6 +87,41 @@ def main():
         service = build('calendar', 'v3', credentials=creds)
         gmail = build('gmail', 'v1', credentials=creds)
         global event
+        
+
+        request = {
+  'labelIds': ['INBOX'],
+  'topicName': 'projects/exam-project-349112/topics/exam-project-349112-topic'
+}
+        r = gmail.users().watch(userId='me', body=request).execute()
+
+        watchurl = "https://www.googleapis.com/calendar/v3/calendars/pythondiller@gmail.com/events/watch"
+        data = {
+         
+                "id" : "3333",
+               "type": "web_hook",
+               "address": 'http://elcaptaino.duckdns.org/webhook',
+         
+      }
+
+        #r = requests.post(watchurl,data=json.dumps(data), headers={'Content-Type': 'application/json','Authorization': "ya29.A0ARrdaM-U-qUpek2G4J__j35XyeF-feLIoLp1jR1MR-bffSjn--YWVtFnMsBJMWfz6ej1AQOlYbwFxojc4fjN7XefqGX2pTCGrQPTXIglmzlBZnT_MT1L0lY4K7NqbiE22CPMKXesEdxna5N-uBVSd70Mvvce"},)
+
+
+        def createWatch():
+            r = service.events.watch({
+         "calendarId": "primary",
+         "requestBody": {
+               "id" : "f30ca5de-cfa4-11ec-9d64-0242ac120002",
+               "type": "web_hook",
+               "address": 'http://elcaptaino.duckdns.org/webhook',
+         }
+      }) 
+            return r
+
+        
+        print(createWatch())
+
+
 
 
         #create a test event.
@@ -108,7 +148,7 @@ def main():
 
         #find busy by events.list(). returns list of event in time interval.
         eventCheck = service.events().list(calendarId='primary',timeMin="2022-05-03T09:00:00-07:00",timeMax='2022-05-04T17:00:00-07:00').execute()
-        print(eventCheck)
+        #print(eventCheck)
 
 
 
