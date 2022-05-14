@@ -13,6 +13,8 @@ app = Flask(__name__)
 
 filePath = 'templates/serverConsole.txt'
 most_recent_history_id = None
+messages = None
+res = None
 
 
 
