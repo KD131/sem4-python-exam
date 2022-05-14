@@ -93,7 +93,7 @@ def main():
   'labelIds': ['INBOX'],
   'topicName': 'projects/exam-project-349112/topics/exam-project-349112-topic'
 }
-        r = gmail.users().watch(userId='me', body=request).execute()
+        #r = gmail.users().watch(userId='me', body=request).execute()
 
         watchurl = "https://www.googleapis.com/calendar/v3/calendars/pythondiller@gmail.com/events/watch"
         data = {
@@ -119,7 +119,7 @@ def main():
             return r
 
         
-        print(createWatch())
+        #print(createWatch())
 
 
 
