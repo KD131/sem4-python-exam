@@ -6,7 +6,7 @@ def download_names():
     nltk.download('names')
 
 
-def are_names(words):
+def extract_names(words):
     with open('data/danish_names/fornavne-m-alle.txt', encoding='utf8') as dmn_file:
         with open('data/danish_names/fornavne-k-alle.txt', encoding='utf8') as dfn_file:
             danish_female_names = dfn_file.readlines()
@@ -18,4 +18,4 @@ def are_names(words):
             return [w for w in words for n in all_names if w.lower() == n]
 
 if __name__ == '__main__':
-    print(are_names(['Johan', 'Kasper', 'Tina', 'Muhammad', 'Lisa', 'Ben', 'Smed', 'René', 'Jeg', 'Johannes-Emil', 'Søren', 'Flystyrt']))
+    print(extract_names(['Johan', 'Kasper', 'Tina', 'Muhammad', 'AUGUST', 'Hieu', 'Road', 'Kickstarter', 'Lisa', 'Ben', 'Smed', 'René', 'Jeg', 'Johan-Emil', 'Søren', 'Flystyrt']))

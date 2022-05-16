@@ -1,8 +1,10 @@
+from collections import defaultdict
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
 from string import punctuation
+from dateutil import parser
 
 def download():
     nltk.download('punkt')
@@ -12,6 +14,16 @@ def download():
     nltk.download('averaged_perceptron_tagger')
     nltk.download('maxent_ne_chunker')
     nltk.download('words')
+
+def process(sentence):
+    # [_three-word]
+    for (w1, t1), (w2, t2), (w3, t3) in nltk.trigrams(sentence):
+        if (t1 == 'NN' and t3 == 'CD'):
+            print(w1, w2, w3)  # [_print-words]
+            print(t1, t2, t3)
+        if (t1 == 'CD' and t3 == 'NN'):
+            print(w1, w2, w3)  # [_print-words]
+            print(t1, t2, t3)
 
 def tokenize(text):
     return word_tokenize(text)
@@ -51,9 +63,15 @@ def pre_process_text(text):
 
 
 if __name__ == '__main__':
-    text = "Hello Johan. We'd like to invite you for an interview for the gigabrain position. Would you be able to come in tomorrow at 12:00 at Rolighedsvej 51, 2860 Søborg"
-    output = pre_process_text(text)
+    text = "Hello Johan. Would you like to hangout tonight? Maybe around 12:00?"
+    text = tokenize(text)
+    date = parser.parse("tomorrow")
+    print(date)
+    text = pos_tag(text)
+    process(text)
+    #print(text)
     #print(type(output))
-    print(output)
+    #output = pre_process_text(text)
+    #print(output)
 
 
