@@ -17,11 +17,11 @@ stop_words.add('said')
 stop_words.add('Diller')
 stop_words.add('Mand')
 
-
-
-files_dir = 'News Articles/'
-Labels = ['business', 'entertainment', 'politics', 'sport', 'tech']
-
+files_dir = 'emailDummyData/'
+Labels = ['business', 'entertainment']
+#, 'politics', 'sport', 'tech'
+#News Articles
+#emailDummyData
 
 def create_data_set():
     with open('data.txt', 'w', encoding='utf8') as outfile:
@@ -32,6 +32,7 @@ def create_data_set():
                 #print(fullfilename)
                 with open(fullfilename, 'rb') as file:
                     text = file.read().decode(errors='replace').replace('\n', '')
+                    text = file.read().decode(errors='replace').replace('\r', '')
                     outfile.write('%s\t%s\t%s\n' % (label, filename, text))
 
 
@@ -152,7 +153,7 @@ if __name__ == '__main__':
 
     #train_classifier(docs)
 
-    new_doc = "Everyone is a different mom, Jade recently told E! News during a sitdown with her BFF. We all have different parenting styles. Our children are different. Carly and I have some different parenting styles and our children have different situations and behaviors and we're always just there to listen and to laugh in the embarrassing moments. I think that's what moms really need. Your kids don't need a perfect mom. They just need you and so I feel like it's okay to show up and be you and be messy sometimes, she continued. Because you're just creating an example of what it is to be human to your kids. So sometimes you need to know, like, you got this and you are enough"
+    new_doc = "Hello Diller Mand. We would like to get you in to have a meeting with us. Because we think you are good at IT and would be perfect for our Job applicaiton"
 
     classify(new_doc)
 
