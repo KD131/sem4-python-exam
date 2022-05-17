@@ -132,11 +132,11 @@ def train_classifier(docs):
 
 def classify(text):
     #load classifier
-    clf_filename = 'naive_bayes_classifer.pkl'
+    clf_filename = 'neural_network/naive_bayes_classifer.pkl'
     nb_clf = pickle.load(open(clf_filename, 'rb'))
 
     #vectorize the new text
-    vec_filename = 'count_vectorizer.pkl'
+    vec_filename = 'neural_network/count_vectorizer.pkl'
     vectorizer = pickle.load(open(vec_filename, 'rb'))
 
     pred = nb_clf.predict(vectorizer.transform([text]))
