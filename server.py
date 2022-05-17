@@ -34,11 +34,11 @@ def webhook():
                         'title': subject,
                         'description': body,
                         'tag': label,  # social/business
-                        'timeMin': '2022-05-' + day + 'T13:00:00+02:00',
-                        'timeMax': '2022-05-' + day + 'T16:30:00+02:00'
+                        'timeMin': '2022-05-' + str(day) + 'T13:00:00+02:00',
+                        'timeMax': '2022-05-' + str(day) + 'T16:30:00+02:00'
                     }
                     success = events.main(network_response)
-                    writeToFile(label+body + " - event created: " + success)
+                    writeToFile(label+body + " - event created: " + str(success))
                     return 'success', 200
                 except Exception as e:
                     print(e)
