@@ -14,6 +14,8 @@ import pickle
 
 stop_words = set(stopwords.words('english'))
 stop_words.add('said')
+stop_words.add('Diller')
+stop_words.add('Mand')
 
 
 
@@ -56,7 +58,6 @@ def clean_text(text):
 
 def print_frequency_dist(docs):
     tokens = defaultdict(list)
-
     for doc in docs:
         doc_label = doc[0]
         doc_text = clean_text(doc[1])
