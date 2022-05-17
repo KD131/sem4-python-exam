@@ -1,9 +1,14 @@
-from flask import Flask,request, abort,render_template 
-import sys
 import datetime
+import random as rnd
+import sys
+from asyncio import events
+
+from flask import Flask, abort, render_template, request
+
 import gmail
 from credentials import getCreds
 from neural_network.neuralClass import classify
+
 app = Flask(__name__)
 
 filePath = 'templates/serverConsole.txt'
@@ -15,10 +20,6 @@ most_recent_history_id = None
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        # writeToFile(request.json)
-        # decoded = base64.urlsafe_b64decode(request.json['message']['data'].encode()).decode()
-        # decoded_dict = json.loads(decoded)
-        # history_id = decoded_dict['historyId']
         global most_recent_history_id
         res, messages = gmail.getEmailsFromHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
@@ -27,7 +28,16 @@ def webhook():
                 try:
                     label = classify(msg)
                     #print(label)
-                    writeToFile(label+msg)
+                    day = rnd.randint(18-20) 
+                    network_response = {
+                        'title': msg[0],
+                        'description': msg[1],
+                        'tag': label,  # social/business
+                        'timeMin': '2022-05-' + day + 'T13:00:00+02:00',
+                        'timeMax': '2022-05-' + day + 'T16:30:00+02:00'
+                    }
+                    success = events.main(network_response)
+                    writeToFile(label+msg + " - event created: " + success)
                     return 'success', 200
                 except Exception as e:
                     print(e)
