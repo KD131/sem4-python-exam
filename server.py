@@ -1,7 +1,7 @@
 import datetime
 import random as rnd
 import sys
-from asyncio import events
+import events
 
 from flask import Flask, abort, render_template, request
 
