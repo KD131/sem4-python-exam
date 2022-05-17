@@ -26,7 +26,7 @@ def webhook():
             for msg in messages:
                 try:
                     label = classify(msg)
-                    print(label)
+                    #print(label)
                     writeToFile(label+msg)
                     return 'success', 200
                 except Exception as e:
@@ -56,10 +56,9 @@ def clearLog():
 
 
 def writeToFile(printText):
-    sys.stdout = open(filePath, "a")
-    currenttime = datetime.datetime.now()
-    print(currenttime, printText)
-    sys.stdout.close()
+    with open(filePath, "a") as file:
+        currenttime = datetime.datetime.now()
+        file.write(str(currenttime)+":"+printText)
 
 
 if __name__ == '__main__':
