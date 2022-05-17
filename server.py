@@ -27,7 +27,7 @@ def webhook():
             for msg in messages:
                 try:
                     subject, body = msg
-                    label = classify(msg)
+                    label = classify(body)
                     #print(label)
                     day = rnd.randint(18-20) 
                     network_response = {
