@@ -14,7 +14,7 @@ import pickle
 
 stop_words = set(stopwords.words('english'))
 stop_words.add('said')
-stop_words.add('mr')
+
 
 
 files_dir = 'News Articles/'
