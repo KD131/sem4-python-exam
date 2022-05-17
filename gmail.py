@@ -79,10 +79,31 @@ def getEmailsFromHistory(history_id):
 
     return res, messages
 
+def get_subject(mail):
+    payload = mail['payload']
+    headers = payload['headers']
+    for h in headers:
+        if h['name'] == 'Subject':
+            return h['value']
+
+def get_most_recent(n=0):
+    """Pretty prints and returns most recent email by integer. 0 is most recent."""
+    res = gmail.users().messages().list(userId='me', maxResults=n+1).execute()
+    messages = res.get('messages')
+    if messages:
+        id = messages[n]['id']
+        mail = gmail.users().messages().get(userId='me', id=id).execute()
+        pretty = json.dumps(mail, indent=4)
+        print(pretty)
+        return mail
+
+
 if __name__ == '__main__':
     # 2522
     # 2472
-    res, messages = getEmailsFromHistory(2581)
-    print(json.dumps(res, indent=4))
-    for m in messages:
-        print(m)
+    # res, messages = getEmailsFromHistory(2581)
+    # print(json.dumps(res, indent=4))
+    # for m in messages:
+    #     print(m)
+    mail = get_most_recent(1)
+    print(get_subject(mail))
