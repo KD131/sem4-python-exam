@@ -22,17 +22,21 @@ def webhook():
         global most_recent_history_id
         res, messages = gmail.getEmailsFromHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
-        for msg in messages:
-            try:
-                label = classify(msg)
-                writeToFile(label+msg)
-                return 'success', 200
-            except:
-                writeToFile('failed to predict'+msg)
-                return 'Predition failed',500
+        if(messages):
+            for msg in messages:
+                try:
+                    label = classify(msg)
+                    writeToFile(label+msg)
+                    return 'success', 200
+                except:
+                    writeToFile('failed to predict'+msg)
+                    return 'Predition failed',500
+        else:
+            return'no msg',200
     else:
         print(request)
         writeToFile(abort(400))
+        return 'megaFail',500
         
 
 @app.route('/')
