@@ -1,10 +1,10 @@
 import datetime
 import random as rnd
 import sys
-import events
 
 from flask import Flask, abort, render_template, request
 
+import events
 import gmail
 from credentials import getCreds
 from neural_network.neuralClass import classify
