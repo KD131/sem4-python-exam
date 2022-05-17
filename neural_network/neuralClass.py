@@ -142,6 +142,7 @@ def classify(text):
     pred = nb_clf.predict(vectorizer.transform([text]))
 
     print(pred[0])
+    return pred[0]
 
 
 if __name__ == '__main__':
