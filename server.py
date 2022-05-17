@@ -25,11 +25,11 @@ def webhook():
         most_recent_history_id = res['historyId']
         if(messages):
             for msg in messages:
+                subject, body = msg
                 try:
-                    subject, body = msg
                     label = classify(body)
                     #print(label)
-                    day = rnd.randint(18-20) 
+                    day = rnd.randint(18, 20) 
                     network_response = {
                         'title': subject,
                         'description': body,
@@ -42,7 +42,7 @@ def webhook():
                     return 'success', 200
                 except Exception as e:
                     print(e)
-                    writeToFile('failed to predict'+msg)
+                    writeToFile('failed to predict'+body)
                     return 'Predition failed',500
         else:
             return'no msg',200
