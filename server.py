@@ -13,8 +13,7 @@ app = Flask(__name__)
 
 filePath = 'templates/serverConsole.txt'
 most_recent_history_id = None
-messages = None
-res = None
+
 
 
 
@@ -26,8 +25,6 @@ def webhook():
         # decoded_dict = json.loads(decoded)
         # history_id = decoded_dict['historyId']
         global most_recent_history_id
-        global res
-        global messages
         res, messages = gmail.getEmailsFromHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
         writeToFile(messages)
