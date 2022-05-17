@@ -14,7 +14,9 @@ import pickle
 
 stop_words = set(stopwords.words('english'))
 stop_words.add('said')
-stop_words.add('mr')
+stop_words.add('Diller')
+stop_words.add('Mand')
+
 
 
 files_dir = 'News Articles/'
@@ -56,7 +58,6 @@ def clean_text(text):
 
 def print_frequency_dist(docs):
     tokens = defaultdict(list)
-
     for doc in docs:
         doc_label = doc[0]
         doc_text = clean_text(doc[1])
@@ -140,6 +141,7 @@ def classify(text):
     pred = nb_clf.predict(vectorizer.transform([text]))
 
     print(pred[0])
+    return pred[0]
 
 
 if __name__ == '__main__':
@@ -150,7 +152,7 @@ if __name__ == '__main__':
 
     #train_classifier(docs)
 
-    new_doc = "Freshly re-elected Emmanuel Macron chose 9 May to come to dinner in Berlin. An auspicious date in EU circles.Nicknamed Europe Day, it commemorates the signing of the post World War Two Schuman declaration promoting peace between European nations. A very different vision of Europe to that of Vladimir Putin, the French president noted. Together, he said, France and Germany carried the ambition for a stronger, more sovereign, more democratic, more united EU, able to rise to the challenges currently facing the continent. It's EU tradition for French and German leaders to visit each other as the first trip abroad following their election. An intentionally symbolic display of the bloc's Franco-German motor purring, even roaring ahead. At least, they hope that's the message transmitted. But how united and influential are France and Germany in today's EU? I'd argue the Russia-Ukraine crisis has fundamentally shifted not only EU security dynamics, but the balance of power in the bloc too. And it's no longer just about France and Germany. When Mr Macron first came to Berlin back in 2017, he was a rookie compared to then Chancellor Angela Merkel. But her successor Olaf Scholz has handled Russia sanctions and weapons deliveries to Ukraine slowly and clumsily during the current crisis - frustrating voters at home and allies abroad."
+    new_doc = "Everyone is a different mom, Jade recently told E! News during a sitdown with her BFF. We all have different parenting styles. Our children are different. Carly and I have some different parenting styles and our children have different situations and behaviors and we're always just there to listen and to laugh in the embarrassing moments. I think that's what moms really need. Your kids don't need a perfect mom. They just need you and so I feel like it's okay to show up and be you and be messy sometimes, she continued. Because you're just creating an example of what it is to be human to your kids. So sometimes you need to know, like, you got this and you are enough"
 
     classify(new_doc)
 

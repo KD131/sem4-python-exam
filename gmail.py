@@ -65,14 +65,14 @@ def getEmailsFromHistory(history_id):
     res = gmail.users().history().list(userId='me', startHistoryId=history_id).execute()
     # message_ids = [message['id'] for message in history['messages'] for history in res['history']]
     history = res.get('history')
-    global message
+    messages = []
     if history:
         message_ids = []
         for hist in history:
             for message in hist['messages']:
                 message_ids.append(message['id'])
         
-        messages = []
+        
         for id in message_ids:
             mail = gmail.users().messages().get(userId='me', id=id).execute()
             messages.append(getPlainText(mail))
