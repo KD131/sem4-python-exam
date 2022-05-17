@@ -26,9 +26,11 @@ def webhook():
             for msg in messages:
                 try:
                     label = classify(msg)
+                    print(label)
                     writeToFile(label+msg)
                     return 'success', 200
-                except:
+                except Exception as e:
+                    print(e)
                     writeToFile('failed to predict'+msg)
                     return 'Predition failed',500
         else:
