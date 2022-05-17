@@ -3,6 +3,7 @@ import sys
 import datetime
 import gmail
 from credentials import getCreds
+from neural_network.neuralClass import classify
 app = Flask(__name__)
 
 filePath = 'templates/serverConsole.txt'
@@ -21,9 +22,14 @@ def webhook():
         global most_recent_history_id
         res, messages = gmail.getEmailsFromHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
-        writeToFile(messages)
-        return 'success', 200
-
+        for msg in messages:
+            try:
+                label = classify(msg)
+                writeToFile(label+msg)
+                return 'success', 200
+            except:
+                writeToFile('failed to predict'+msg)
+                return 'Predition failed',500
     else:
         print(request)
         writeToFile(abort(400))
