@@ -5,6 +5,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer, SnowballStemmer, WordNetLemmatizer
 from string import punctuation
 from dateutil import parser
+import parsedatetime as pdt
 
 def download():
     nltk.download('punkt')
@@ -63,13 +64,11 @@ def pre_process_text(text):
 
 
 if __name__ == '__main__':
-    text = "Hello Johan. Would you like to hangout tonight? Maybe around 12:00?"
-    text = tokenize(text)
-    date = parser.parse("tomorrow")
-    print(date)
-    text = pos_tag(text)
-    process(text)
-    #print(text)
+    text = "Hello Johan. Would you like to hangout tonight? We meet at struenseegade 29 st. tv. 2200 København N"
+    #text = tokenize(text)
+    #text = pos_tag(text)
+    result = pre_process_text(text)
+    print(result)
     #print(type(output))
     #output = pre_process_text(text)
     #print(output)
