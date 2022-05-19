@@ -18,6 +18,13 @@ def getService():
 
 calendar = getService()
 
+def createWatch():
+    calendar.events.watch({
+  'id': 'primary',
+  'token': '1234',
+  'type': 'web_hook',
+  'address': 'https://elcaptaino.duckdns.org/'
+})
 
 def getUpcoming():
     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
@@ -121,6 +128,7 @@ if __name__ == '__main__':
         'timeMin': '2022-05-15T13:00:00+02:00',
         'timeMax': '2022-05-15T16:30:00+02:00'
     }
-    main(network_response)
+    #main(network_response)
+    createWatch()
   
     
