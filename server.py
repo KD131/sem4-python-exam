@@ -28,9 +28,12 @@ def webhook():
         if(messages):
             for msg in messages:
                 subject, body = msg
+                print("subject:" subject)
+                print("body:", body)
                 try:
                     label = classify(body)
                     times = extract_datetime(body)
+                    print("label:" label, "times:", times)
                     if len(times) == 0: 
                         print("No datetime found.")
                         raise("No datetime found.")
@@ -45,6 +48,7 @@ def webhook():
                     }
                     print("network_response: ",network_response)
                     success = events.main(network_response)
+                    print("succes:", success)
                     writeToFile(label+body + " - event created: " + str(success))
                     return 'success', 200
                 except Exception as e:
