@@ -1,19 +1,29 @@
-import nltk
-from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.tokenize import word_tokenize
 import parsedatetime as pdt
 from datetime import datetime
 import regex as re
+from pytz import timezone
 
 relative_time = ['today', 'tomorrow', 'yesterday']
 exact_days = ['monday', 'tuesday', 'wednesday',
               'thursday', 'friday', 'saturday', 'sunday']
 exact_days_short = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-months = ['January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December']
-months_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May',
-                'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-all_signifiers = relative_time + exact_days + \
-    exact_days_short + months + months_short
+months = {
+    'Jan':'January', 
+    'Feb':'February', 
+    'Mar':'March', 
+    'Apr':'April', 
+    'May':'May',
+    'Jun':'June', 
+    'Jul':'July', 
+    'Aug':'August', 
+    'Sep':'September', 
+    'Oct':'October', 
+    'Nov':'November', 
+    'Dec':'December',
+}
+
+all_signifiers = relative_time + exact_days + exact_days_short
 
 def extract_signifiers(text):
     signifiers = {}
@@ -36,16 +46,42 @@ def extract_time(text):
             times[time] = pos
     return times
 
+def extract_str_dates(text):
+    def get_pattern(m):
+        return "("+pattern_day+" "+m+")|("+m+" "+pattern_day+")|("+pattern_day_old+m+")"
+    pattern_day = "([0-3]?[0-9])(st|th)?"
+    pattern_day_old = "([0-3]?[0-9])(st|th) of "
+    dates = {}
+    for m in months:
+        pattern_date = get_pattern(months[m])
+        pattern_date_short = get_pattern(m)
+        matches = re.findall(pattern_date, text, re.IGNORECASE)
+        if len(matches) == 0:
+            matches = matches = re.findall(pattern_date_short, text, re.IGNORECASE)
+        filtered_match = [(tuple(x for x in _ if x))[0] for _ in matches] #remove empty cells in tuple and return 1st item
+        if filtered_match:
+            d = str(filtered_match[0])
+            pos = sum(re.search("".join(d), text).span())/2
+            dates[d] = pos
+    return dates
+
 def extract_dates(text):
     def process_dates(txt, dates):
+        def us_format(date):
+            d = date.split("/")
+            if len(d) == 3:
+                return d[1] + "/" + d[0] + "/" + d[2]
+            else:
+                return d[1] + "/" + d[0]
         dates_processed = {}
         for d in dates:
             pos = sum(re.search("".join(d), txt).span())/2
-            date_processed = "".join(d).replace("[^\\d]", "/")
-            dates_processed[date_processed] = pos
+            date_normalised = "".join(d).replace("[^\\d]", "/")
+            date_us = us_format(date_normalised)
+            dates_processed[date_us] = pos
         return dates_processed
     dates = {}
-    pattern_day_month = "([0-3]?[1-9])(/|\.)([0-1])?([0-9])"
+    pattern_day_month = "([0-3]?[0-9])(/|\.)([0-1])?([0-9])"
     pattern_year = "(/|\.)([1-2][0-9])?([0-9][0-9])"
     matches = re.findall(pattern_day_month + pattern_year, text)
     if len(matches) == 0:
@@ -54,94 +90,72 @@ def extract_dates(text):
         dates = process_dates(text, matches)
     return dates
 
-def match_time_signifiers(times, signifiers):
-    def get_closest_time(a, a_pos, b, b_pos, s_pos):
-        if abs(a_pos-s_pos) < abs(b_pos-s_pos):
+
+def pair_by_proximity(actors, key_actor):
+    def get_nearest_actor(a, a_pos, na, na_pos, ka_pos):
+        if abs(a_pos-ka_pos) < abs(na_pos-ka_pos):
             return (a, a_pos)
         else:
-            return (b, b_pos)
+            return (na, na_pos)
+    actor_key_actor_pairs = []
+    for ka in key_actor:
+        nearest_actor = ""
+        nearest_actor_pos = 99999
+        for actor in actors:
+            actor_pos = actors[actor]
+            nearest_actor, nearest_actor_pos = get_nearest_actor(
+                actor, 
+                actor_pos, 
+                nearest_actor, 
+                nearest_actor_pos, 
+                key_actor[ka])
+        actor_key_actor_pairs.append([ka, nearest_actor])
+    return actor_key_actor_pairs
 
-    time_sets = []
-    for s in signifiers:
-        closest_time = "99:99"
-        closest_time_pos = 999
-        for t in times:
-            t_pos = times[t]
-            closest_time, closest_time_pos = get_closest_time(
-                t, t_pos, closest_time, closest_time_pos, signifiers[s])
-        time_sets.append([s, closest_time])
-    return time_sets
-
-
-def parse_sets(sets, as_string):
+def parse_sets(sets):
     cal = pdt.Calendar()
     dts = []
     for set in sets:
-        time_struct, parse_status = cal.parse(set[0] + ' ' + set[1])
+        dt_string = set[0] + ' ' + set[1]
+        time_struct, parse_status = cal.parse(dt_string)
         if parse_status:
-            dt = datetime(*time_struct[:6])
-            if as_string:
-                dts.append(str(dt))
-            else:
-                dts.append(dt)
+            dt = datetime(*time_struct[:6]).isoformat()
+            dts.append(dt)
+    dts.sort()
     return dts
 
 
-def parse_items(items, as_string):
+def parse_items(items):
     cal = pdt.Calendar()
     dts = []
     for i in items:
         time_struct, parse_status = cal.parse(i)
         if parse_status:
-            dt = datetime(*time_struct[:6])
-            if as_string:
-                dts.append(str(dt))
-            else:
-                dts.append(dt)
+            dt = datetime(*time_struct[:6]).isoformat()
+            dts.append(dt)
+    dts.sort()
     return dts
 
-def process(text):
-    print(text)
-    cal = pdt.Calendar()
+def extract_datetime(text):
     signifiers = extract_signifiers(text)
-    times = extract_time(text)
-    time_sets = match_time_signifiers(times, signifiers)
     dates = extract_dates(text)
-    dt_sets = parse_sets(time_sets, True)
-    dt_items = parse_items(signifiers, True)
-    print(dates)
-    #print("S:", signifiers)
-    #print("T:", times)
-    #print("SETS:", time_sets)
-    #print("DT SETS:", dt_sets)
-    #print("DT SIGNIFIERS:", dt_items)
-    # dt = datetime(*time_struct[:6])
-    # print(dt)
-
-# def process(sentence):
-#    cal = pdt.Calendar()
-#    for (w1, t1), (w2, t2), (w3, t3) in nltk.trigrams(sentence):
-#        if (t1 == 'NN' and t3 == 'CD'):
-#            print(w1, w2, w3)
-#            time_struct, parse_status = cal.parse(w1 + ' ' + w2 + ' ' + w3)
-#            if (parse_status):
-#                print("Parse succesful.")
-#                return datetime(*time_struct[:6])
-#        if (t1 == 'CD' and t3 == 'NN'):
-#            time_struct, parse_status = cal.parse(w1 + w2 + w3)
-#            if (parse_status):
-#                print("Parse succesful.")
-#                return datetime(*time_struct[:6])
-
-
-def tokenize(text):
-    return word_tokenize(text)
-
-
-def pos_tag(tokens):
-    return nltk.pos_tag(tokens)
-
+    times = extract_time(text)
+    str_dates = extract_str_dates(text)
+    pairs = pair_by_proximity(times, {**dates, **str_dates, **signifiers})
+    if pairs:
+        return parse_sets(pairs)
+    elif dates:
+        return parse_items(dates)
+    elif str_dates:
+        return parse_items(dates)
+    elif signifiers:
+        return parse_items(signifiers)
+    elif times:
+        return parse_items(times)
+    return []
 
 if __name__ == '__main__':
-    text = "Hello Johan. Ignore the number 11:55. We would like to invite you for an interview tomorrow at 14:00. Alternatively, we'd be available monday at 12:00. We would also like to meet 18/10/22 at 9:00 and on 29/09/2022 and on 1/1/99"
-    process(text)
+    text = "Hello Johan. Ignore the number 11:55. We would like to invite you for a crazy party begining tomorrow at 10:00 and ending 18:30 on 30/05/22"
+    datetime = extract_datetime(text)
+    print(text)
+    print(datetime)
