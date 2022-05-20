@@ -17,8 +17,6 @@ filePath = 'templates/serverConsole.txt'
 most_recent_history_id = None
 
 
-
-
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
@@ -28,36 +26,38 @@ def webhook():
         if(messages):
             for msg in messages:
                 subject, body = msg
-                #print("subject:", subject)
-                #print("body:", body)
-                try:
-                    label = classify(body)
-                    times = extract_datetime(body)
-                    #print("label:", label, "times:", times)
-                    if len(times) == 0: 
-                        print("No datetime found.")
-                        raise("No datetime found.")
-                    names = extract_names(body)
-                    description = body
-                    if names:
-                        description = "Persons: " + names + ". Text: " + body
-                    network_response = {
-                        'title': subject,
-                        'description': description,
-                        'tag': label,  # social/business
-                        'timeMin': times[0],
-                        'timeMax': times[1]
-                    }
-                    #print("network_response: ", network_response)
-                    success = events.main(network_response)
-                    if success: print("SUCCESS: ",subject)
-                    else: print(print("FAIL: ",subject))
-                    writeToFile(label+body + " - event created: " + str(success))
-                    return 'success', 200
-                except Exception as e:
-                    print('Insufficient data to build event. ', e)
-                    writeToFile('Insufficient data to build event. '+body)
-                    return 'Insufficient data to build event.',500
+                if not gmail.isSpam(body):
+                    #print("subject:", subject)
+                    #print("body:", body)
+                    try:
+                        label = classify(body)
+                        times = extract_datetime(body)
+                        #print("label:", label, "times:", times)
+                        if len(times) == 0: 
+                            print("No datetime found.")
+                            raise("No datetime found.")
+                        names = extract_names(body)
+                        description = body
+                        if names:
+                            description = "Persons: " + names + ". Text: " + body
+                        network_response = {
+                            'title': subject,
+                            'description': description,
+                            'tag': label,  # social/business
+                            'timeMin': times[0],
+                            'timeMax': times[1]
+                        }
+                        #print("network_response: ", network_response)
+                        success = events.main(network_response)
+                        if success: print("SUCCESS: ",subject)
+                        else: print("FAIL: ",subject)
+                        writeToFile(label+body + " - event created: " + str(success))
+                        return 'success', 200
+                    except Exception as e:
+                        print('Insufficient data to build event. ', e)
+                        writeToFile('Insufficient data to build event. '+body)
+                        return 'Insufficient data to build event.',500
+
         else:
             return'no msg',200
     else:
@@ -98,4 +98,4 @@ if __name__ == '__main__':
     watch = gmail.createWatch()
     events.createWatch()
     most_recent_history_id = watch['historyId']
-    app.run(host='0.0.0.0', port=8000)       
+    app.run(host='0.0.0.0', port=8000)

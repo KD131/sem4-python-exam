@@ -99,6 +99,16 @@ def get_most_recent(n=0):
         print(pretty)
         return mail
 
+def isSpam(body):
+    spamString = ['''Forwarding this invitation could allow any recipient to send a response to  
+the organizer and be added to the guest list, or invite others regardless  
+of their own invitation status, or to modify your RSVP.''']
+    if body != None and spamString in body:
+        return True
+    else:
+        return False
+
+
 
 if __name__ == '__main__':
     # 2522
