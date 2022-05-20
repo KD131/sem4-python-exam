@@ -35,7 +35,7 @@ def webhook():
                     names = extract_names(body)
                     network_response = {
                         'title': subject,
-                        'description': body,
+                        'description':"Persons: " + names + ". " + body,
                         'tag': label,  # social/business
                         'timeMin': times[0],
                         'timeMax': times[1]
@@ -45,7 +45,7 @@ def webhook():
                     writeToFile(label+body + " - event created: " + str(success))
                     return 'success', 200
                 except Exception as e:
-                    print(e)
+                    print('Insufficient data to build event/n', e)
                     writeToFile('Insufficient data to build event'+body)
                     return 'Insufficient data to build event',500
         else:
