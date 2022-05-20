@@ -159,6 +159,7 @@ def extract_datetime(text):
 
 if __name__ == '__main__':
     text = "Hello Johan. Ignore the number 11:55. We would like to invite you for a crazy party begining tomorrow at 10:00 and ending 18:30 on 30/05/22"
+    text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)
     print(datetime)
