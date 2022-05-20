@@ -2,7 +2,6 @@ from nltk.tokenize import word_tokenize
 import parsedatetime as pdt
 from datetime import datetime
 import regex as re
-from pytz import timezone
 
 relative_time = ['today', 'tomorrow', 'yesterday']
 exact_days = ['monday', 'tuesday', 'wednesday',
