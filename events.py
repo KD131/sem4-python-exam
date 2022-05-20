@@ -30,11 +30,10 @@ def createWatch():
   'type': 'web_hook',
   'address': 'https://elcaptaino.duckdns.org/newEvent'
 }).execute()
-    print(r)
 
 def newEvent(id):
     event = calendar.events().get(calendarId='primary', eventId=id).execute()
-    print(event)
+    print(event['id'])
     if isBusy(event['start']['dateTime'],event['end']['dateTime'],id):
         print('neeeeeeej')
     else:
@@ -66,11 +65,12 @@ def isBusy(timeMin, timeMax,id):
     res = calendar.events().list(calendarId='primary',
                                  timeMin=timeMin, timeMax=timeMax).execute()
     items = res.get('items')
+    print(len(items))
     if not items:
         return False
 
     for item in items:
-
+        print(item['id'])
         #check if is current event/ not working correctly
         #if id==item['id']:
         #s    continue
