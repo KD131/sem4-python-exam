@@ -27,26 +27,36 @@ def webhook():
             if not gmail.isSpam(body):
                 for msg in messages:
                     subject, body = msg
+                    print("subject:", subject)
+                    print("body:", body)
                     try:
                         label = classify(body)
                         times = extract_datetime(body)
-                        if len(times) == 0: raise("No datetime found.")
+                        print("label:", label, "times:", times)
+                        if len(times) == 0: 
+                            print("No datetime found.")
+                            raise("No datetime found.")
                         names = extract_names(body)
+                        description = body
+                        if names:
+                            description = "Persons: " + names + ". Text: " + body
                         network_response = {
                             'title': subject,
-                            'description': body,
+                            'description': description,
                             'tag': label,  # social/business
                             'timeMin': times[0],
                             'timeMax': times[1]
                         }
-                        print("network_response: ",network_response)
+                        print("network_response: ", network_response)
                         success = events.main(network_response)
+                        print("succes:", success)
                         writeToFile(label+body + " - event created: " + str(success))
                         return 'success', 200
                     except Exception as e:
-                        print(e)
-                        writeToFile('Insufficient data to build event'+body)
-                        return 'Insufficient data to build event',500
+                        print('Insufficient data to build event.', e)
+                        writeToFile('Insufficient data to build event.'+body)
+                        return 'Insufficient data to build event.',500
+  
         else:
             return'no msg',200
     else:

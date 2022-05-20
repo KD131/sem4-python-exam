@@ -1,7 +1,8 @@
-from nltk.tokenize import word_tokenize
+from datetime import datetime, timedelta, timezone
+
 import parsedatetime as pdt
-from datetime import datetime
 import regex as re
+from nltk.tokenize import word_tokenize
 
 relative_time = ['today', 'tomorrow', 'yesterday']
 exact_days = ['monday', 'tuesday', 'wednesday',
@@ -48,8 +49,8 @@ def extract_time(text):
 def extract_str_dates(text):
     def get_pattern(m):
         return "("+pattern_day+" "+m+")|("+m+" "+pattern_day+")|("+pattern_day_old+m+")"
-    pattern_day = "([0-3]?[0-9])(st|th)?"
-    pattern_day_old = "([0-3]?[0-9])(st|th) of "
+    pattern_day = "([0-3]?[0-9])(st|th|.)?"
+    pattern_day_old = "([0-3]?[0-9])(st|th|.) of "
     dates = {}
     for m in months:
         pattern_date = get_pattern(months[m])
@@ -80,15 +81,14 @@ def extract_dates(text):
             dates_processed[date_us] = pos
         return dates_processed
     dates = {}
-    pattern_day_month = "([0-3]?[0-9])(/|\.)([0-1])?([0-9])"
-    pattern_year = "(/|\.)([1-2][0-9])?([0-9][0-9])"
+    pattern_day_month = "([0-3]?[0-9])(/)([0-1])?([0-9])"
+    pattern_year = "(/)([1-2][0-9])?([0-9][0-9])"
     matches = re.findall(pattern_day_month + pattern_year, text)
     if len(matches) == 0:
         matches = re.findall(pattern_day_month, text)
     if len(matches) != 0:
         dates = process_dates(text, matches)
     return dates
-
 
 def pair_by_proximity(actors, key_actor):
     def get_nearest_actor(a, a_pos, na, na_pos, ka_pos):
@@ -119,7 +119,8 @@ def parse_sets(sets):
         dt_string = set[0] + ' ' + set[1]
         time_struct, parse_status = cal.parse(dt_string)
         if parse_status:
-            dt = datetime(*time_struct[:6]).isoformat()
+            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+            # pytz.timezone('Europe/Copenhagen') gives +00:50 for some reason
             dts.append(dt)
     dts.sort()
     return dts
@@ -131,7 +132,7 @@ def parse_items(items):
     for i in items:
         time_struct, parse_status = cal.parse(i)
         if parse_status:
-            dt = datetime(*time_struct[:6]).isoformat()
+            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
             dts.append(dt)
     dts.sort()
     return dts
@@ -155,8 +156,8 @@ def extract_datetime(text):
     return []
 
 if __name__ == '__main__':
-    text = "Hello Johan. Ignore the number 11:55. We would like to invite you for a crazy party begining tomorrow at 10:00 and ending 18:30 on 30/05/22"
-    text = "Hej Johan."
+    text = "Hello Johan. Ignore the number 11:55. We would like to invite you for a crazy party begining today at 10:00 and ending 09.10 tomorrow"
+    #text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)
     print(datetime)

@@ -148,5 +148,5 @@ if __name__ == '__main__':
     #main(network_response)
     createWatch()
     newEvent('7n7qkonu905k92d35u1n8veah4')
-  
+    print(isBusy('2022-05-20T17:00:00+02:00', '2022-05-20T18:00:00+02:00'))
     
