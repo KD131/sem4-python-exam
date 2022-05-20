@@ -34,10 +34,11 @@ def webhook():
                     if len(times) == 0: 
                         print("No datetime found.")
                         raise("No datetime found.")
-                    names = extract_names(body)
+                    #names = extract_names(body)
                     network_response = {
                         'title': subject,
-                        'description':"Persons: " + names + ". " + body,
+                        #'description':"Persons: " + names + ". " + body,
+                        'description':body,
                         'tag': label,  # social/business
                         'timeMin': times[0],
                         'timeMax': times[1]
@@ -47,9 +48,9 @@ def webhook():
                     writeToFile(label+body + " - event created: " + str(success))
                     return 'success', 200
                 except Exception as e:
-                    print('Insufficient data to build event', e)
-                    writeToFile('Insufficient data to build event'+body)
-                    return 'Insufficient data to build event',500
+                    print('Insufficient data to build event.', e)
+                    writeToFile('Insufficient data to build event.'+body)
+                    return 'Insufficient data to build event.',500
         else:
             return'no msg',200
     else:
