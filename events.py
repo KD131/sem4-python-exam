@@ -37,8 +37,7 @@ def newEvent(id):
         print('neeeeeeej')
     else:
         label = classify(event['description'])
-
-        #createEvent(event['summery'],event['summery'],event['start']['dateTime'],event['end']['dateTime'])
+        createEvent(event['summery'],event['summery'],label,event['start']['dateTime'],event['end']['dateTime'])
 
 
 def getUpcoming():
