@@ -4,9 +4,8 @@ import uuid
 import json
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from random import randrange
 from neural_network.neuralClass import classify
-
-
 
 from credentials import getCreds
 
@@ -139,7 +138,6 @@ def main(network_response):
         #skriv email til sender at vi kan
         return True
       
-
 if __name__ == '__main__':
     network_response = {
         'title': 'Title on event',
