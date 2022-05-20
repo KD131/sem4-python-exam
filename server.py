@@ -78,8 +78,8 @@ def catch_all():
 @app.route('/newEvent',methods=['POST'])
 def newEvent():
     if request.method == 'POST':
-        print(request)
-        events.newEvent(request.json()['id'])
+        print(request.get_json())
+        events.newEvent(request.get_json()['id'])
 
 
 @app.route('/clear')
