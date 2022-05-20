@@ -37,10 +37,10 @@ def webhook():
                     if len(times) == 0: 
                         print("No datetime found.")
                         raise("No datetime found.")
-                    #names = extract_names(body)
+                    names = extract_names(body)
                     network_response = {
                         'title': subject,
-                        #'description':"Persons: " + names + ". " + body,
+                        'description':"Persons: " + names + ". Text: " + body,
                         'description':body,
                         'tag': label,  # social/business
                         'timeMin': times[0],

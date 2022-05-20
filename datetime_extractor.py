@@ -90,7 +90,6 @@ def extract_dates(text):
         dates = process_dates(text, matches)
     return dates
 
-
 def pair_by_proximity(actors, key_actor):
     def get_nearest_actor(a, a_pos, na, na_pos, ka_pos):
         if abs(a_pos-ka_pos) < abs(na_pos-ka_pos):
