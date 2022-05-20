@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
 import parsedatetime as pdt
-import pytz
 import regex as re
 from nltk.tokenize import word_tokenize
 
@@ -82,8 +81,8 @@ def extract_dates(text):
             dates_processed[date_us] = pos
         return dates_processed
     dates = {}
-    pattern_day_month = "([0-3]?[0-9])(/|\.)([0-1])?([0-9])"
-    pattern_year = "(/|\.)([1-2][0-9])?([0-9][0-9])"
+    pattern_day_month = "([0-3]?[0-9])(/)([0-1])?([0-9])"
+    pattern_year = "(/)([1-2][0-9])?([0-9][0-9])"
     matches = re.findall(pattern_day_month + pattern_year, text)
     if len(matches) == 0:
         matches = re.findall(pattern_day_month, text)
@@ -158,8 +157,8 @@ def extract_datetime(text):
     return []
 
 if __name__ == '__main__':
-    text = "Hello Johan. Ignore the number 11:55. We would like to invite you for a crazy party begining tomorrow at 10:00 and ending 18:30 on 30/05/22"
-    text = "Hej Johan."
+    text = "Hello Johan. Ignore the number 11:55. We would like to invite you for a crazy party begining today at 10:00 and ending 09.10 tomorrow"
+    #text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)
     print(datetime)
