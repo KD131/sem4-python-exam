@@ -1,7 +1,9 @@
-from nltk.tokenize import word_tokenize
+from datetime import datetime, timedelta, timezone
+
 import parsedatetime as pdt
-from datetime import datetime
+import pytz
 import regex as re
+from nltk.tokenize import word_tokenize
 
 relative_time = ['today', 'tomorrow', 'yesterday']
 exact_days = ['monday', 'tuesday', 'wednesday',
@@ -119,7 +121,8 @@ def parse_sets(sets):
         dt_string = set[0] + ' ' + set[1]
         time_struct, parse_status = cal.parse(dt_string)
         if parse_status:
-            dt = datetime(*time_struct[:6]).isoformat()
+            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+            # pytz.timezone('Europe/Copenhagen') gives +00:50 for some reason
             dts.append(dt)
     dts.sort()
     return dts
@@ -131,7 +134,7 @@ def parse_items(items):
     for i in items:
         time_struct, parse_status = cal.parse(i)
         if parse_status:
-            dt = datetime(*time_struct[:6]).isoformat()
+            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
             dts.append(dt)
     dts.sort()
     return dts
