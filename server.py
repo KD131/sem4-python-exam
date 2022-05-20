@@ -24,8 +24,8 @@ def webhook():
         res, messages = gmail.getEmailsFromHistory(most_recent_history_id)
         most_recent_history_id = res['historyId']
         if(messages):
-            if not gmail.isSpam(body):
-                for msg in messages:
+            for msg in messages:
+                if not gmail.isSpam(body):
                     subject, body = msg
                     print("subject:", subject)
                     print("body:", body)
@@ -56,7 +56,7 @@ def webhook():
                         print('Insufficient data to build event.', e)
                         writeToFile('Insufficient data to build event.'+body)
                         return 'Insufficient data to build event.',500
-  
+
         else:
             return'no msg',200
     else:
