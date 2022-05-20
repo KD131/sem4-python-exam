@@ -32,7 +32,7 @@ def createWatch():
 
 def newEvent(id):
     event = calendar.events().get(calendarId='primary', eventId=id).execute()
-    print(event['id'])
+    print(event)
     if isBusy(event['start']['dateTime'],event['end']['dateTime'],id):
         print('neeeeeeej')
     else:
@@ -59,20 +59,19 @@ def getUpcoming():
         print(start, event['summary'])
 
 
-def isBusy(timeMin, timeMax,id):
+def isBusy(timeMin, timeMax,id=None):
     """timeMin and timeMax are RFC3339 timestamps"""
     res = calendar.events().list(calendarId='primary',
                                  timeMin=timeMin, timeMax=timeMax).execute()
     items = res.get('items')
-    print(len(items))
     if not items:
         return False
 
     for item in items:
         print(item['id'])
         #check if is current event/ not working correctly
-        #if id==item['id']:
-        #s    continue
+        if id==item['id']:
+            continue
         creator = item['creator']
         if creator.get('self') == True:
             return True

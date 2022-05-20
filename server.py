@@ -8,6 +8,7 @@ import events
 import gmail
 from credentials import getCreds
 from neural_network.neuralClass import classify
+from datetime_extractor import extract_datetime
 
 app = Flask(__name__)
 
@@ -28,14 +29,16 @@ def webhook():
                 subject, body = msg
                 try:
                     label = classify(body)
-                    #print(label)
+                    times = extract_datetime(body)
+                    
+
                     day = rnd.randint(18, 20) 
                     network_response = {
                         'title': subject,
                         'description': body,
                         'tag': label,  # social/business
-                        'timeMin': '2022-05-' + str(day) + 'T13:00:00+02:00',
-                        'timeMax': '2022-05-' + str(day) + 'T16:30:00+02:00'
+                        'timeMin': times[0],
+                        'timeMax': times[1]
                     }
                     success = events.main(network_response)
                     writeToFile(label+body + " - event created: " + str(success))
@@ -82,5 +85,6 @@ def writeToFile(printText):
 if __name__ == '__main__':
     getCreds()
     watch = gmail.createWatch()
+    events.createWatch()
     most_recent_history_id = watch['historyId']
     app.run(host='0.0.0.0', port=8000)       
