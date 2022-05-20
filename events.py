@@ -105,13 +105,14 @@ event = {
 def main(network_response):
     if isBusy(network_response['timeMin'],network_response['timeMax']):
         #skriv en mail retur vi ikke kan
-        print('nej')       
+        print('nej')
+        return False
     else:
         createEvent(**network_response)
         #lave et eller andet der bekræfter vi har fået noget i kalenderen.
         #skriv email til sender at vi kan
-
-
+        return True
+      
 if __name__ == '__main__':
     network_response = {
         'title': 'Title on event',
