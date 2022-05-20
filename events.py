@@ -1,9 +1,11 @@
 import base64
 import datetime
+import uuid
 import json
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from random import randrange
+from neural_network.neuralClass import classify
 
 from credentials import getCreds
 
@@ -18,6 +20,25 @@ def getService():
 
 
 calendar = getService()
+
+def createWatch():
+    r = calendar.events().watch(calendarId='primary',body=
+    {
+  'id': str(uuid.uuid4()),
+  "kind": "api#channel",
+  'type': 'web_hook',
+  'address': 'https://elcaptaino.duckdns.org/newEvent'
+}).execute()
+
+def newEvent(id):
+    event = calendar.events().get(calendarId='primary', eventId=id).execute()
+    print(event['id'])
+    if isBusy(event['start']['dateTime'],event['end']['dateTime'],id):
+        print('neeeeeeej')
+    else:
+        label = classify(event['description'])
+
+        #createEvent(event['summery'],event['summery'],event['start']['dateTime'],event['end']['dateTime'])
 
 
 def getUpcoming():
@@ -38,15 +59,20 @@ def getUpcoming():
         print(start, event['summary'])
 
 
-def isBusy(timeMin, timeMax):
+def isBusy(timeMin, timeMax,id):
     """timeMin and timeMax are RFC3339 timestamps"""
     res = calendar.events().list(calendarId='primary',
                                  timeMin=timeMin, timeMax=timeMax).execute()
     items = res.get('items')
+    print(len(items))
     if not items:
         return False
 
     for item in items:
+        print(item['id'])
+        #check if is current event/ not working correctly
+        #if id==item['id']:
+        #s    continue
         creator = item['creator']
         if creator.get('self') == True:
             return True
@@ -121,6 +147,8 @@ if __name__ == '__main__':
         'timeMin': '2022-05-15T13:00:00+02:00',
         'timeMax': '2022-05-15T16:30:00+02:00'
     }
-    main(network_response)
+    #main(network_response)
+    createWatch()
+    newEvent('7n7qkonu905k92d35u1n8veah4')
   
     
