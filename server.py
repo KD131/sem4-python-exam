@@ -25,7 +25,7 @@ def webhook():
         most_recent_history_id = res['historyId']
         if(messages):
             for msg in messages:
-                if not gmail.isSpam(body):
+                if not gmail.isSpam(msg):
                     subject, body = msg
                     print("subject:", subject)
                     print("body:", body)
