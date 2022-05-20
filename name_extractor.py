@@ -14,7 +14,7 @@ def extract_names(words):
             global_names = nltk.corpus.names.words()
             # Combine all lists, map lambda to normalise strings, convert to set to eliminate duplicates, and return as list:
             all_names = list(set((map(lambda n: n.lower().strip(), danish_male_names + danish_female_names + global_names))))
-            print("Checking", len(words), "words for matches among", len(all_names), "names..")
+            #print("Checking", len(words), "words for matches among", len(all_names), "names..")
             return [w for w in words for n in all_names if w.lower() == n]
 
 if __name__ == '__main__':

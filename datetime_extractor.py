@@ -110,7 +110,8 @@ def pair_by_proximity(actors, key_actor):
                 nearest_actor, 
                 nearest_actor_pos, 
                 key_actor[ka])
-        actor_key_actor_pairs.append([ka, nearest_actor])
+        if (nearest_actor != "" and nearest_actor_pos != 99999):
+            actor_key_actor_pairs.append([ka, nearest_actor])
     return actor_key_actor_pairs
 
 def parse_sets(sets):
