@@ -33,7 +33,6 @@ def webhook():
                     times = extract_datetime(body)
                     if len(times) == 0: raise("No datetime found.")
                     names = extract_names(body)
-                    day = rnd.randint(18, 20) 
                     network_response = {
                         'title': subject,
                         'description': body,
@@ -41,6 +40,7 @@ def webhook():
                         'timeMin': times[0],
                         'timeMax': times[1]
                     }
+                    print("network_response: ",network_response)
                     success = events.main(network_response)
                     writeToFile(label+body + " - event created: " + str(success))
                     return 'success', 200
