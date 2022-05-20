@@ -28,7 +28,7 @@ def webhook():
         if(messages):
             for msg in messages:
                 subject, body = msg
-                print("subject:" subject)
+                print("subject:", subject)
                 print("body:", body)
                 try:
                     label = classify(body)
