@@ -54,8 +54,15 @@ def webhook():
 
 @app.route('/')
 def catch_all():
+    print(request)
     with open(filePath, 'r') as f: 
 	    return render_template('console.html', text=f.read()) 
+
+@app.route('/newEvent')
+def newEvent():
+    if request.method == 'POST':
+        print(request['id'])
+        events.newEvent(request['id'])
 
 
 @app.route('/clear')
