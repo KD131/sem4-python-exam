@@ -49,8 +49,8 @@ def extract_time(text):
 def extract_str_dates(text):
     def get_pattern(m):
         return "("+pattern_day+" "+m+")|("+m+" "+pattern_day+")|("+pattern_day_old+m+")"
-    pattern_day = "([0-3]?[0-9])(st|th)?"
-    pattern_day_old = "([0-3]?[0-9])(st|th) of "
+    pattern_day = "([0-3]?[0-9])(st|th|.)?"
+    pattern_day_old = "([0-3]?[0-9])(st|th|.) of "
     dates = {}
     for m in months:
         pattern_date = get_pattern(months[m])
