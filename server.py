@@ -58,6 +58,7 @@ def webhook():
                         writeToFile('Insufficient data to build event. '+body)
                         return 'Insufficient data to build event.',500
                 else:
+                    print('was spawm')
                     return 'u mama is spam',200
 
         else:
@@ -74,7 +75,7 @@ def catch_all():
     with open(filePath, 'r') as f: 
 	    return render_template('console.html', text=f.read()) 
 
-@app.route('/newEvent')
+@app.route('/newEvent',methods=['POST'])
 def newEvent():
     if request.method == 'POST':
         print(request['id'])
