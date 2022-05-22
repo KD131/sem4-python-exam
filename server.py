@@ -30,11 +30,15 @@ def webhook():
                     #print("subject:", subject)
                     #print("body:", body)
                     try:
+                        writeToFile('Predicting event type ...')
                         label = classify(body)
+                        writeToFile('Event labeled as' + label)
+                        writeToFile('Predicting start and end for event ...')
                         times = extract_datetime(body)
                         #print("label:", label, "times:", times)
                         if len(times) == 0: 
                             print("No datetime found.")
+                            writeToFile("No datetime found.")
                             raise("No datetime found.")
                         names = extract_names(body)
                         description = body
