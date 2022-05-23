@@ -30,12 +30,27 @@ def createWatch():
 
 def newEvent(id):
     event = calendar.events().get(calendarId='primary', eventId=id).execute()
-    print(event)
-    if isBusy(event['start']['dateTime'],event['end']['dateTime'],id):
-        print('neeeeeeej')
-    else:
+    isBusy = isBusy(event['start']['dateTime'],event['end']['dateTime'],id)
+    event = eventResponse(id,isBusy,event)
+
+
+    if not isBusy:
         label = classify(event['description'])
-        createEvent(event['summery'],event['summery'],label,event['start']['dateTime'],event['end']['dateTime'])
+        event["summary"] = label + event["summary"]
+    calendar.events().update(calendarId='primary', eventId=id,body=event).execute()
+    return isBusy
+
+
+def eventResponse(id, isBusy,event):
+    attendees = event.get('attendees')
+    for a in attendees:
+        if a.get('self') == True:
+            if isBusy:
+                a['responseStatus'] = "declined"
+            else:
+                a['responseStatus'] = "accepted"
+    return event
+
 
 
 
