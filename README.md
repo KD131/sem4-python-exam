@@ -10,7 +10,7 @@ Vi har lavet et script og lagt det op på en server, der lytter til, om en googl
 * sklearn
 * pickle4
 * Google cloud platform
-* Ubunto
+* Ubuntu
 * Nginx og certbot
 * duckdns
 
