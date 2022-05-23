@@ -118,6 +118,6 @@ def writeToFile(printText):
 if __name__ == '__main__':
     getCreds()
     watch = gmail.createWatch()
-    events.createWatch()
+    #events.createWatch()
     most_recent_history_id = watch['historyId']
     app.run(host='0.0.0.0', port=8000)
