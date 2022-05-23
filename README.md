@@ -61,7 +61,6 @@ Calendar invitationer:
 Logik og Google API er færdigbygget. Desværre har vi haft udfordringer med at håndtere et sync update fra Google, når en ændring bliver lavet på et specifikt event. Denne del er derfor deaktiveret.
 
 ## 7. Hvad vi vil highlighte
-Neural Netværk klassen.
-End to End
-Google Pub/Sub service
-
+* Neural Netværk klassen.
+* End to End
+* Google Pub/Sub service
