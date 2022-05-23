@@ -1,20 +1,20 @@
-business	001.txt	
-business	002.txt	
-business	003.txt	
-business	004.txt	
-business	005.txt	
-business	006.txt	
-business	007.txt	
-business	008.txt	
-business	009.txt	
-business	010.txt	
-entertainment	001.txt	
-entertainment	002.txt	
-entertainment	003.txt	
-entertainment	004.txt	
-entertainment	005.txt	
-entertainment	006.txt	
-entertainment	007.txt	
-entertainment	008.txt	
-entertainment	009.txt	
-entertainment	010.txt	
+business	001.txt	Hello Diller Mand. I am writing to you from microsoft. We have a job offer for you, as in our webdevelopment team. We will like to schedule a meeting with you. When do you have time for a meeting?
+business	002.txt	Hello Diller Mand. I am writing to you as we would like you as our new intern this summer. Can you come at bakerstreet 10th friday at 10 pm so that we can meet in person? If not let us know when it suits you better.
+business	003.txt	Hi Diller Mand. We have received you mail about our job application in backend development. We would like to let your know that we will have got a lot of applications and we are going threw them all, we will write back late january, and meeting will be thrown in start febuary.
+business	004.txt	Hello Diller Mand. The new plan for the our IT-development is now live. We are going to have a meeting Monday at 9 pm.
+business	005.txt	Dear Diller Mand. We would like to extend our IT department. And we have heard you were the king of IT from David. We will very much like to get in touch with you, when do you have time for a meeting?
+business	006.txt	Hello Diller Mand. We have got your application for our internship. We will very much like you to come in at backstreetboys 12, so we can meet in person. It will be in next week monday to thursday, please let us know when it is best for you.
+business	007.txt	Hi Diller Mand. We have already found someone for our internship. We hope that you will find a place that suits you. Best of luck.
+business	008.txt	Hi Diller Mand. We are very happy to let you know that you got the job at us. You will start monday at 9pm. Were you will have a meeting going over the daily things you will be doing.
+business	009.txt	Hello Diller Mand. Can you please let us know if you are attending the meeting at 11pm friday. As we are going threw our It plan and you are a key part of that.
+business	010.txt	Hello Diller Mand. We have a job offer for you at in our cloud department. We will like you to come in so we can meet and talk about the daily job you will be doing.
+entertainment	001.txt	Yo bro. Lets go out for a drink soon yea? I would like to hear how you are doing.
+entertainment	002.txt	Yo dudes. There is a new music festival coming to town next weekend, are you in?
+entertainment	003.txt	Yo diller. The new Avengers is in the movietheater the fifth. Would you like to go out?
+entertainment	004.txt	Diller! You gotta see this, our favorit dj is playing at the nightclub tonight! no excuses, BE THERE!
+entertainment	005.txt	sups ma dudes. Beers in the park, RIGHT NOW! Call me when you are here
+entertainment	006.txt	Dear Diller Mand. We will very much like to invite you to our weeding this summer. The big party will be at 09/09 - 2022 at 10 pm. In Roskilde. You have a plus one, so bring your date. The SU is 05/05 - 2022 Hope to see you. 
+entertainment	007.txt	Hey man. You wanna play some ball thursday after school? I know Kasper And Johan is joing, so we can go 2on2. I will bring some music hope you can!
+entertainment	008.txt	Sup my bro. I am throwing the biggest and baddest party you will ever see! It will be awesome and legendary!!! This friday at 8 am. Dont be late, or you might miss all the fun! 
+entertainment	009.txt	DILLLLLLEEERR MAAAAAN!!!! What up my bro, lets hang soon man. I will be in Denmark next week, so lets go out and party man like we did in berlin!!! See you.
+entertainment	010.txt	Yo my man. Do you want to hang out friday maybe go for a beer at the local pub? I will also ask Kasper and Johan.
