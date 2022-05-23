@@ -110,7 +110,7 @@ def clearLog():
 def writeToFile(printText):
     with open(filePath, "a") as file:
         currenttime = datetime.datetime.now()
-        file.write(str(currenttime)+":"+printText)
+        file.write(str(currenttime)+":"+printText + '\n')
 
 
 if __name__ == '__main__':
