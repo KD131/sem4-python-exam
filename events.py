@@ -76,7 +76,6 @@ def createEvent(title,description, tag, timeMin, timeMax):
         }
     }
     r = calendar.events().insert(calendarId='primary', body=requestBody).execute()
-    print(r)
 
 def main(network_response):
     if isBusy(network_response['timeMin'],network_response['timeMax']):
