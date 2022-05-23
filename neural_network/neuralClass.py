@@ -20,9 +20,6 @@ stop_words.add('Mand')
 
 files_dir = 'emailDummyData/'
 Labels = ['business', 'entertainment']
-#, 'politics', 'sport', 'tech'
-#News Articles
-#emailDummyData
 
 def create_data_set():
     with open('data.txt', 'w', encoding='utf8') as outfile:
