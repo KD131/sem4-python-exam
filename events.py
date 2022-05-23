@@ -4,6 +4,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from random import randrange
 from neural_network.neuralClass import classify
+from server import writeToFile
 
 from credentials import getCreds
 
@@ -30,13 +31,16 @@ def createWatch():
 
 def newEvent(id):
     event = calendar.events().get(calendarId='primary', eventId=id).execute()
+    writeToFile('New event invitation. Checking for avalibility')
     isBusy = isBusy(event['start']['dateTime'],event['end']['dateTime'],id)
     event = eventResponse(id,isBusy,event)
-
-
     if not isBusy:
+        writeToFile('Calendar free. Predicting event type...')
         label = classify(event['description'])
+        writeToFile('Event predicted as: ' + label)
         event["summary"] = label + event["summary"]
+
+    writeToFile('Event updated, attenting:' + isBusy)
     calendar.events().update(calendarId='primary', eventId=id,body=event).execute()
     return isBusy
 
