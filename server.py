@@ -94,7 +94,7 @@ def newEvent():
             return 'success', 200
         except Exception as e:
             print('Insufficient data to build event. ', e)
-            writeToFile('Insufficient data to build event. '+e)
+            writeToFile('Insufficient data to build event. ')
             return 'ERROR',500
         
 
