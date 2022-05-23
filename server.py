@@ -90,11 +90,11 @@ def newEvent():
         try:
             events.newEvent(request.get_json()['id'])
             writeToFile('eventcreated')
-            return 200
+            return 'success', 200
         except Exception as e:
             print('Insufficient data to build event. ', e)
             writeToFile('Insufficient data to build event. ')
-            return 500
+            return 'ERROR',500
 
 
 @app.route('/clear')
