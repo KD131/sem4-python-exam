@@ -30,6 +30,7 @@ def webhook():
                     try:
                         writeToFile('\n' +'New invitation incoming')
                         writeToFile('Predicting event type ...')
+                        writeToFile('Email text: '+body)
                         label = classify(body)
                         writeToFile('Event labeled as: ' + label)
                         writeToFile('Predicting start and end for event ...')
