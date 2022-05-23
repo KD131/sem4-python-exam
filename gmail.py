@@ -41,17 +41,6 @@ def getPlainText(mail):
     message = base64.urlsafe_b64decode(data.encode()).decode()
     return message
 
-def getAllMails():
-    # Prints plaintext content of all mails
-    # If we return a list of more than 100, we might want to up the maxResults param. If more than 500, we need list_next().
-    mails_response = gmail.users().messages().list(userId='me').execute()
-    mails = mails_response['messages']
-    
-    for m in mails:
-        actual_mail = gmail.users().messages().get(userId='me', id=m['id']).execute()
-        message = getPlainText(actual_mail)
-        print(message)
-
 def createWatch():
     request = {
         'labelIds': ['INBOX'],
@@ -88,16 +77,6 @@ def get_subject(mail):
         if h['name'] == 'Subject':
             return h['value']
 
-def get_most_recent(n=0):
-    """Pretty prints and returns most recent email by integer. 0 is most recent."""
-    res = gmail.users().messages().list(userId='me', maxResults=n+1).execute()
-    messages = res.get('messages')
-    if messages:
-        id = messages[n]['id']
-        mail = gmail.users().messages().get(userId='me', id=id).execute()
-        pretty = json.dumps(mail, indent=4)
-        print(pretty)
-        return mail
 
 def isSpam(body):
     spamString = '''Forwarding this invitation could allow any recipient to send a response to'''
@@ -109,11 +88,34 @@ def isSpam(body):
 
 
 if __name__ == '__main__':
-    # 2522
-    # 2472
     # res, messages = getEmailsFromHistory(2581)
     # print(json.dumps(res, indent=4))
     # for m in messages:
     #     print(m)
     mail = get_most_recent(1)
     print(get_subject(mail))
+
+
+#deprecated
+def getAllMails():
+    # Prints plaintext content of all mails
+    # If we return a list of more than 100, we might want to up the maxResults param. If more than 500, we need list_next().
+    mails_response = gmail.users().messages().list(userId='me').execute()
+    mails = mails_response['messages']
+    
+    for m in mails:
+        actual_mail = gmail.users().messages().get(userId='me', id=m['id']).execute()
+        message = getPlainText(actual_mail)
+        print(message)
+
+#deprecated
+def get_most_recent(n=0):
+    """Pretty prints and returns most recent email by integer. 0 is most recent."""
+    res = gmail.users().messages().list(userId='me', maxResults=n+1).execute()
+    messages = res.get('messages')
+    if messages:
+        id = messages[n]['id']
+        mail = gmail.users().messages().get(userId='me', id=id).execute()
+        pretty = json.dumps(mail, indent=4)
+        print(pretty)
+        return mail
