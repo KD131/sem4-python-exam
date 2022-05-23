@@ -35,7 +35,7 @@ pip install parsedatetime
 
 5. Bruger guide:
 Åben det her link https://elcaptaino.duckdns.org/ 
-send en mail til den her mail på engelsk: Pythondiller@gmail.com. 
+send en mail til den her mail på engelsk: pythondiller@gmail.com. 
 Tjek dit response.
 
 6. Status:
