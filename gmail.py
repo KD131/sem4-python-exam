@@ -1,10 +1,13 @@
 import base64
+import json
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-import json
-
 from credentials import getCreds
+
 
 def getService():
     try:
@@ -77,6 +80,16 @@ def get_subject(mail):
         if h['name'] == 'Subject':
             return h['value']
 
+def get_sender(mail):
+    payload = mail['payload']
+    headers = payload['headers']
+    for h in headers:
+        if h['name'] == 'Subject':
+            return h['value']
+
+def get_thread_id(mail):
+    return mail['threadId']
+
 
 def isSpam(body):
     spamString = '''Forwarding this invitation could allow any recipient to send a response to'''
@@ -84,6 +97,24 @@ def isSpam(body):
         return True
     else:
         return False
+
+def send_mail(body, to, subject, thread=None):
+    # our_email_res = gmail.users().getProfile(userId='me').execute()
+    # our_email = our_email_res['emailAddress']
+
+    message = MIMEText(body)
+    message['To'] = to
+    message['Subject'] = subject
+    print(message)
+    encoded = base64.urlsafe_b64encode(message.as_bytes()).decode()
+    sample_mail = {
+        'raw': encoded
+    }
+    # maybe it doesn't mind getting a None, but just in case
+    if thread:
+        sample_mail['threadId'] = thread
+
+    return gmail.users().messages().send(userId='me', body=sample_mail).execute()
 
 
 
@@ -104,8 +135,10 @@ if __name__ == '__main__':
     # print(json.dumps(res, indent=4))
     # for m in messages:
     #     print(m)
-    mail = get_most_recent(1)
-    print(get_subject(mail))
+    # mail = get_most_recent(0)
+    body = 'this is a message'
+    thread = ''
+    print(send_mail(body, 'insert_email_address', 'Test'))
 
 
 #deprecated
