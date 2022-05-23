@@ -2,8 +2,10 @@
 Automatiseret sekretær.
 
 ## 2. Beskrivelse
-Vi har lavet et script og lagt det op på en server, der lytter til, om en google mail kommer ind på en given mail konto. Hvis der gør det kører den mailen igennem et neural netværk, den ser om hvilken kategori den hører til (Business, entertainment) og så ser om der et given dato og tidspunkt, tjekker op i ens google kalender om man allerede er booket på det tidspunkt, ellers opretter den et nyt event tilsvarende dato og tid. 
+Vi har lavet et script og deployet på en ubunto server. Gennem Google cloud platforms, publicher/subscriber service vil der bliver sendt et HTTPS request, når en email modtages på en given mail konto.  Mailens indhold kørers igennem et neural netværk, og forsøger at vurdere hvilken kategori invitationen hører til (Business, entertainment).
+Derefter analyseres teksten efter start og slut tidspunkt, og tjekker op i ens google kalender om man allerede er booket på det tidspunkt, og hvis ikke opretter et nyt event med tilsvarende dato og tid.
 
+Invitationer modtaget direkte i google kalender håndteres også.
 
 ## 3. teknologier
 * nltk 
@@ -11,8 +13,8 @@ Vi har lavet et script og lagt det op på en server, der lytter til, om en googl
 * pickle4
 * Google cloud platform
 * Ubuntu
+* Tmux
 * Nginx og certbot
-* duckdns
 
 
 ## 4. Installation
@@ -31,14 +33,32 @@ pip install parsedatetime
 *google-auth er måske inkluderet i en af de andre libraries*
 
 ## 5. Bruger guide
-Åben det her link https://elcaptaino.duckdns.org/.
 
-Send en mail til den her mail på engelsk: pythondiller@gmail.com. 
 
-Tjek dit response.
+Send en mail med invitation på engelsk til: pythondiller@gmail.com. 
+fx : "Here at Financial Holdings, we value integrity, robustness, reliability,
+and other such vague corporate buzzwords. We want you to come in for a
+scheduled meeting the 27/05 at 12:00 and you're not leaving until 27/05
+14:00. I trust we can come to a satisfactory conclusion, at least for us as
+it might end in your termination.
+
+We'll be seeing you. Always.
+
+Beatrice Meagan, Financial Holdings HR Department
+"
+
+Tjek dit response på link: https://elcaptaino.duckdns.org/.
 
 ## 6. Status
-Vi har fået hul igennem hele vejen. Så at når man sender en mail får man et response tilbage, og den laver et nyt event hvis der ikke allerede ligger et event i forvejen. Vi har valgt at lave det hele som et proof of concept, da der ikke ligger et dataset med business eller entertainment mails, så for at vores neural netværk skal virke optimalt skal man lave nogle rimelig buzz word mails, i den given kategori.
+Programet er opdelt 2. Emails invitationer & Calender invitationer
+Emails invitationer er færdig bygget, men med begrændsninger for formuleringen af emailen.
+ - En email kan modtages, håndteres og derefter lægges i kalenderen. 
+Vi har lidt udfordringer med forskellige tidspunkt formuleringer.
+
+Da vi selv har måtte lave trænings data, og derfor har et ret smalt datasæt. så for at vores neural netværk skal virke optimalt skal man bruge nogle buzzwords, i den given kategori.
+
+Calender invitationer: 
+Logik og google api er færdigbygget. Desværre har vi haft udfordringer med at håndtere et sync update fra google, når en ændring bliver lavet på et specifikt event. Denne del er derfor deactiveret.
 
 ## 7. Hvad vi vil highlighte
 Neural Netværk klassen.
