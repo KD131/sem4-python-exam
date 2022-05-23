@@ -68,23 +68,16 @@ def getEmailsFromHistory(history_id):
         for id in message_ids:
             mail = gmail.users().messages().get(userId='me', id=id).execute()
             mail_body = getPlainText(mail)
-            mail_subject = get_subject(mail)
+            mail_subject = get_header('Subject', mail)
             messages.append((mail_subject, mail_body))
 
     return res, messages
 
-def get_subject(mail):
+def get_header(header, mail):
     payload = mail['payload']
     headers = payload['headers']
     for h in headers:
-        if h['name'] == 'Subject':
-            return h['value']
-
-def get_sender(mail):
-    payload = mail['payload']
-    headers = payload['headers']
-    for h in headers:
-        if h['name'] == 'Subject':
+        if h['name'] == header:
             return h['value']
 
 def get_thread_id(mail):
@@ -98,23 +91,30 @@ def isSpam(body):
     else:
         return False
 
-def send_mail(body, to, subject, thread=None):
-    # our_email_res = gmail.users().getProfile(userId='me').execute()
-    # our_email = our_email_res['emailAddress']
+def send_mail(body, to=None, subject=None, reply_to=None):
+    if not (to or reply_to):
+        raise Exception("Must have recipient either as to= or be a reply")
+    if not (subject or reply_to):
+        raise Exception("Must have subject either as subject= or be a reply")
 
     message = MIMEText(body)
+    mail = {}
+
+    if reply_to:
+        to = get_header('Return-Path', reply_to)
+        subject = get_header('Subject', reply_to)
+        id = get_header('Message-ID', reply_to)
+        message['In-Reply-To'] = id
+        message['References'] = get_header('References', reply_to) + " " + id
+        mail['threadId'] = get_thread_id(reply_to)
+
     message['To'] = to
     message['Subject'] = subject
     print(message)
     encoded = base64.urlsafe_b64encode(message.as_bytes()).decode()
-    sample_mail = {
-        'raw': encoded
-    }
-    # maybe it doesn't mind getting a None, but just in case
-    if thread:
-        sample_mail['threadId'] = thread
+    mail['raw'] = encoded
 
-    return gmail.users().messages().send(userId='me', body=sample_mail).execute()
+    return gmail.users().messages().send(userId='me', body=mail).execute()
 
 
 
@@ -125,6 +125,7 @@ def get_most_recent(n=0):
     messages = res.get('messages')
     if messages:
         id = messages[n]['id']
+        print(id)
         mail = gmail.users().messages().get(userId='me', id=id).execute()
         pretty = json.dumps(mail, indent=4)
         print(pretty)
@@ -135,10 +136,9 @@ if __name__ == '__main__':
     # print(json.dumps(res, indent=4))
     # for m in messages:
     #     print(m)
-    # mail = get_most_recent(0)
+    mail = get_most_recent(0)
     body = 'this is a message'
-    thread = ''
-    print(send_mail(body, 'insert_email_address', 'Test'))
+    # print(send_mail(body, reply_to=mail))
 
 
 #deprecated
