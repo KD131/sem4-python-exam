@@ -133,7 +133,6 @@ def parse_sets(sets):
                 *time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
             # pytz.timezone('Europe/Copenhagen') gives +00:50 for some reason
             dts.append(dt)
-    dts.sort()
     return dts
 
 
@@ -153,7 +152,6 @@ def parse_items(items, pairs):
                 dt = datetime(
                     *time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
                 dts.append(dt)
-    dts.sort()
     return dts
 
 
@@ -168,28 +166,25 @@ def extract_datetime(text):
     if pairs:
         parsed = parse_sets(pairs)
         if parsed:
-            dts.append(parsed)
+            dts += parsed
     if dates:
         parsed = parse_items(dates, pairs)
         if parsed:
-            dts.append(parsed)
+            dts += parsed
     if str_dates:
         parsed = parse_items(str_dates, pairs)
         if parsed:
-            dts.append(parsed)
-
+            dts += parsed
     if signifiers:
         parsed = parse_items(signifiers, pairs)
         if parsed:
-            dts.append(parsed)
-
+            dts += parsed
     if times:
         parsed = parse_items(times, pairs)
         if parsed:
-            dts.append(parsed)
-
+            dts += parsed
+    dts.sort()
     return dts
-
 
 if __name__ == '__main__':
     text = "Hello Johan. Ignore the number. We would like to invite you for a crazy party begining today at 10:00 and ending tomorrow"
