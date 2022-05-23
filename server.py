@@ -67,8 +67,8 @@ def webhook():
                         writeToFile('Insufficient data to build event. '+body)
                         return 'Insufficient data to build event.',500
                 else:
-                    print('was spawm')
-                    return 'u mama is spam',200
+                    print('Message was spam')
+                    return 'Message was spam',200
 
         else:
             return'no msg',200
