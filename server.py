@@ -87,9 +87,11 @@ def catch_all():
 @app.route('/newEvent',methods=['POST'])
 def newEvent():
     print('New event incoming')
+    json_data = request.json
+    id = json_data["id"]
     if request.method == 'POST': 
         try:
-            events.newEvent(request.get_json()['id'])
+            events.newEvent(id)
             writeToFile('eventcreated')
             return 'success', 200
         except Exception as e:
