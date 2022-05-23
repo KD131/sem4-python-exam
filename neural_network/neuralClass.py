@@ -30,10 +30,8 @@ def create_data_set():
             dir = '%s/%s' % (files_dir, label)
             for filename in os.listdir(dir):
                 fullfilename = '%s/%s' % (dir, filename)
-                #print(fullfilename)
                 with open(fullfilename, 'rb') as file:
                     text = file.read().decode(errors='replace').replace('\n', '')
-                    text = file.read().decode(errors='replace').replace('\r', '')
                     outfile.write('%s\t%s\t%s\n' % (label, filename, text))
 
 
@@ -99,7 +97,7 @@ def evaluate_classifier(title, classifier, vectorizer, x_test, y_test):
     x_test_tfidf = vectorizer.transform(x_test)
     y_pred = classifier.predict(x_test_tfidf)
 
-    #what dis?
+    
     precision = metrics.precision_score(y_test, y_pred, average = 'micro')
     recall = metrics.recall_score(y_test, y_pred, average = 'micro')
     f1 = metrics.f1_score(y_test,y_pred, average = 'micro')
@@ -116,7 +114,7 @@ def train_classifier(docs):
     #Create doc-term matrix
     dtm = vectorizer.fit_transform(x_train)
 
-    #train naive bayes classifier whats dis?
+    #train naive bayes classifier
     naive_bayes_classifier = MultinomialNB().fit(dtm, y_train)
 
     evaluate_classifier("Naive Bayes\tTRAIN\t", naive_bayes_classifier, vectorizer, x_train, y_train)
