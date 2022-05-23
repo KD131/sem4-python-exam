@@ -69,7 +69,8 @@ def getEmailsFromHistory(history_id):
             mail = gmail.users().messages().get(userId='me', id=id).execute()
             mail_body = getPlainText(mail)
             mail_subject = get_header('Subject', mail)
-            messages.append((mail_subject, mail_body))
+            # can be refactored to a dict or just return mail and call the get methods from server.py
+            messages.append((mail_subject, mail_body, mail))
 
     return res, messages
 

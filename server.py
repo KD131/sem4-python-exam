@@ -25,7 +25,7 @@ def webhook():
         most_recent_history_id = res['historyId']
         if(messages):
             for msg in messages:
-                subject, body = msg
+                subject, body, mail = msg
                 if not gmail.isSpam(body):
                     try:
                         writeToFile('\n' +'New invitation incoming')
@@ -56,7 +56,7 @@ def webhook():
                         }
                         #print("network_response: ", network_response)
                         writeToFile('Checking calender for availability ...')
-                        success = events.main(network_response)
+                        success = events.main(network_response, mail)
                         if success:
                             print("SUCCESS: ",subject) 
                             writeToFile(label+body + " - event created: " + str(success))
