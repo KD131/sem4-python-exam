@@ -66,7 +66,9 @@ def extract_str_dates(text):
         filtered_match = [(tuple(x for x in _ if x))[0] for _ in matches]
         if filtered_match:
             d = str(filtered_match[0])
+            print("d",d)
             pos = sum(re.search("".join(d), text).span())/2
+            d = d.replace(" of ", " ")
             dates[d] = pos
     return dates
 
@@ -107,9 +109,8 @@ def pair_by_proximity(key_items, items):
     for ki in key_items:
         nearest_item = ""
         nearest_item_pos = 99999
-        avail_items = items
-        for item in avail_items:
-            item_pos = avail_items[item]
+        for item in items:
+            item_pos = items[item]
             nearest_item, nearest_item_pos = get_nearest_item(
                 item,
                 item_pos,
@@ -118,7 +119,6 @@ def pair_by_proximity(key_items, items):
                 key_items[ki])
         if (nearest_item != "" and nearest_item_pos != 99999):
             item_key_item_pairs.append([ki, nearest_item])
-            del avail_items[item]
     return item_key_item_pairs
 
 
@@ -126,11 +126,12 @@ def parse_sets(sets):
     cal = pdt.Calendar()
     dts = []
     for set in sets:
-        dt_string = set[0] + ' ' + set[1]
+        dt_string = set[1] + ' at ' + set[0]
+        print("dt_string", dt_string)
         time_struct, parse_status = cal.parse(dt_string)
         if parse_status:
-            dt = datetime(
-                *time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+            print("dt", dt)
             # pytz.timezone('Europe/Copenhagen') gives +00:50 for some reason
             dts.append(dt)
     return dts
@@ -149,46 +150,66 @@ def parse_items(items, pairs):
         if is_unique(i, pairs):
             time_struct, parse_status = cal.parse(i)
             if parse_status:
-                dt = datetime(
-                    *time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+                dt = datetime(*time_struct[:3], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+                #print("dt", dt)
+                date, time = dt.split("T")
+                #print("date", date, "time", time)
+                time_split = list(time)
+                time_split[1] = str(9)
+                time_nine = "".join(time_split)
+                #print("join", date + "T" + time_nine)
+                dt = date + time_nine
                 dts.append(dt)
     return dts
 
 
 def extract_datetime(text):
+    def auto_fill_endtime(dts):
+        if len(dts) == 1:
+            date, time = dts[0].split("T")
+            end = list(time)
+            if len(time) == 14:
+                new_time = str(min(23, int(time[0]+time[1])+2))
+                a, b = list(new_time)
+                end[0] = a
+                end[1] = b
+            else:
+                new_time = str(int(time[0])+2)
+                if len(new_time) == 1:
+                    end[0] = new_time
+                else:
+                    a, b = list(new_time)
+                    end[0] = a
+                    end[1] = b
+            dts.append("".join(end))
+        return dts
     signifiers = extract_signifiers(text)
-    dates = extract_dates(text)
-    times = extract_time(text)
+    num_dates = extract_dates(text)
     str_dates = extract_str_dates(text)
-    pairs = pair_by_proximity(times, {**dates, **str_dates, **signifiers})
+    #print("s", signifiers)
+    dates = {**num_dates, **str_dates, **signifiers}
+    #print("d", dates)
+    times = extract_time(text)
+    #print(times)
+    pairs = pair_by_proximity(times, dates)
     dts = []
-    print(signifiers)
     if pairs:
         parsed = parse_sets(pairs)
         if parsed:
             dts += parsed
     if dates:
         parsed = parse_items(dates, pairs)
+        #print("p",parsed)
         if parsed:
             dts += parsed
-    if str_dates:
-        parsed = parse_items(str_dates, pairs)
-        if parsed:
-            dts += parsed
-    if signifiers:
-        parsed = parse_items(signifiers, pairs)
-        if parsed:
-            dts += parsed
-    if times:
-        parsed = parse_items(times, pairs)
-        if parsed:
-            dts += parsed
-    dts.sort()
+  
+    dts = auto_fill_endtime(dts)
     return dts
 
+
 if __name__ == '__main__':
-    text = "Hello Johan. Ignore the number. We would like to invite you for a crazy party begining today at 10:00 and ending tomorrow"
-    #text = "Hej Johan."
+    text = "There is a party at the 11th of july 10:00. It ends at 16:00. Also party at 22/01/23 at 14:00 and at aug 13 00:00"
+    # text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)
     print(datetime)
