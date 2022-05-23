@@ -86,11 +86,8 @@ def catch_all():
 
 @app.route('/newEvent',methods=['POST'])
 def newEvent():
-    if request.method == 'POST':
-        events.newEvent(request.get_json()['id'])
-
-
-        '''
+    print('New event incoming')
+    if request.method == 'POST': 
         try:
             events.newEvent(request.get_json()['id'])
             writeToFile('eventcreated')
@@ -99,7 +96,7 @@ def newEvent():
             print('Insufficient data to build event. ', e)
             writeToFile('Insufficient data to build event. '+e)
             return 'ERROR',500
-        '''
+        
 
 @app.route('/clear')
 def clearLog():

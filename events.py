@@ -26,7 +26,7 @@ def createWatch():
   'id': str(uuid.uuid4()),
   "kind": "api#channel",
   'type': 'web_hook',
-  'address': 'https://elcaptaino.duckdns.org/newEvent'
+  'address': 'http://elcaptaino.duckdns.org/newEvent'
 }).execute()
 
 def newEvent(id):
