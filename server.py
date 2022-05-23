@@ -28,9 +28,11 @@ def webhook():
                 subject, body = msg
                 if not gmail.isSpam(body):
                     try:
+                        writeToFile('\n' +'New invitation incoming')
                         writeToFile('Predicting event type ...')
+                        writeToFile('Email text: '+body)
                         label = classify(body)
-                        writeToFile('Event labeled as' + label)
+                        writeToFile('Event labeled as: ' + label)
                         writeToFile('Predicting start and end for event ...')
                         times = extract_datetime(body)
                         #print("label:", label, "times:", times)
@@ -94,8 +96,8 @@ def newEvent():
             writeToFile('eventcreated')
             return 'success', 200
         except Exception as e:
-            print('Insufficient data to build event. ', e)
-            writeToFile('Insufficient data to build event. ')
+            #print('Insufficient data to build event. ', e)
+            #writeToFile('Insufficient data to build event. ')
             return 'ERROR',500
         
 
@@ -110,7 +112,7 @@ def clearLog():
 def writeToFile(printText):
     with open(filePath, "a") as file:
         currenttime = datetime.datetime.now()
-        file.write(str(currenttime)+":"+printText)
+        file.write(str(currenttime)+":"+printText + '\n')
 
 
 if __name__ == '__main__':
