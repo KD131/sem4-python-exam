@@ -62,4 +62,6 @@ Logik og Google API er færdigbygget. Desværre har vi haft udfordringer med at 
 
 ## 7. Hvad vi vil highlighte
 Neural Netværk klassen.
+End to End
+Google Pub/Sub service
 
