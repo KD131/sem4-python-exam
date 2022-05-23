@@ -87,6 +87,18 @@ def isSpam(body):
 
 
 
+#dev helper method
+def get_most_recent(n=0):
+    """Pretty prints and returns most recent email by integer. 0 is most recent."""
+    res = gmail.users().messages().list(userId='me', maxResults=n+1).execute()
+    messages = res.get('messages')
+    if messages:
+        id = messages[n]['id']
+        mail = gmail.users().messages().get(userId='me', id=id).execute()
+        pretty = json.dumps(mail, indent=4)
+        print(pretty)
+        return mail
+
 if __name__ == '__main__':
     # res, messages = getEmailsFromHistory(2581)
     # print(json.dumps(res, indent=4))
@@ -107,15 +119,3 @@ def getAllMails():
         actual_mail = gmail.users().messages().get(userId='me', id=m['id']).execute()
         message = getPlainText(actual_mail)
         print(message)
-
-#deprecated
-def get_most_recent(n=0):
-    """Pretty prints and returns most recent email by integer. 0 is most recent."""
-    res = gmail.users().messages().list(userId='me', maxResults=n+1).execute()
-    messages = res.get('messages')
-    if messages:
-        id = messages[n]['id']
-        mail = gmail.users().messages().get(userId='me', id=id).execute()
-        pretty = json.dumps(mail, indent=4)
-        print(pretty)
-        return mail

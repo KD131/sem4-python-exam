@@ -27,8 +27,6 @@ def webhook():
             for msg in messages:
                 subject, body = msg
                 if not gmail.isSpam(body):
-                    #print("subject:", subject)
-                    #print("body:", body)
                     try:
                         writeToFile('Predicting event type ...')
                         label = classify(body)
@@ -40,6 +38,9 @@ def webhook():
                             print("No datetime found.")
                             writeToFile("No datetime found.")
                             raise("No datetime found.")
+                        else:
+                            writeToFile('Event start predicted to: '+ times[0])
+                            writeToFile('Event end predicted to: '+ times[1])
                         names = extract_names(body)
                         description = body
                         if names:
@@ -52,18 +53,22 @@ def webhook():
                             'timeMax': times[1]
                         }
                         #print("network_response: ", network_response)
+                        writeToFile('Checking calender for availability ...')
                         success = events.main(network_response)
-                        if success: print("SUCCESS: ",subject)
-                        else: print("FAIL: ",subject)
-                        writeToFile(label+body + " - event created: " + str(success))
+                        if success:
+                            print("SUCCESS: ",subject) 
+                            writeToFile(label+body + " - event created: " + str(success))
+                        else:
+                            writeToFile('Calender is occupied, event not created')
+                            print("FAIL: ",subject)
                         return 'success', 200
                     except Exception as e:
                         print('Insufficient data to build event. ', e)
                         writeToFile('Insufficient data to build event. '+body)
                         return 'Insufficient data to build event.',500
                 else:
-                    print('was spawm')
-                    return 'u mama is spam',200
+                    print('Message was spam')
+                    return 'Message was spam',200
 
         else:
             return'no msg',200
@@ -81,10 +86,18 @@ def catch_all():
 
 @app.route('/newEvent',methods=['POST'])
 def newEvent():
-    if request.method == 'POST':
-        print(request.get_json())
-        events.newEvent(request.get_json()['id'])
-
+    print('New event incoming')
+    id = request.headers.get('X-Goog-Resource-ID')
+    if request.method == 'POST': 
+        try:
+            events.newEvent(id)
+            writeToFile('eventcreated')
+            return 'success', 200
+        except Exception as e:
+            print('Insufficient data to build event. ', e)
+            writeToFile('Insufficient data to build event. ')
+            return 'ERROR',500
+        
 
 @app.route('/clear')
 def clearLog():

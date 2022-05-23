@@ -9,21 +9,22 @@ exact_days = ['monday', 'tuesday', 'wednesday',
               'thursday', 'friday', 'saturday', 'sunday']
 exact_days_short = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 months = {
-    'Jan':'January', 
-    'Feb':'February', 
-    'Mar':'March', 
-    'Apr':'April', 
-    'May':'May',
-    'Jun':'June', 
-    'Jul':'July', 
-    'Aug':'August', 
-    'Sep':'September', 
-    'Oct':'October', 
-    'Nov':'November', 
-    'Dec':'December',
+    'Jan': 'January',
+    'Feb': 'February',
+    'Mar': 'March',
+    'Apr': 'April',
+    'May': 'May',
+    'Jun': 'June',
+    'Jul': 'July',
+    'Aug': 'August',
+    'Sep': 'September',
+    'Oct': 'October',
+    'Nov': 'November',
+    'Dec': 'December',
 }
 
 all_signifiers = relative_time + exact_days + exact_days_short
+
 
 def extract_signifiers(text):
     signifiers = {}
@@ -36,6 +37,7 @@ def extract_signifiers(text):
             signifiers[s] = pos
     return signifiers
 
+
 def extract_time(text):
     times = {}
     matches = re.findall("([0-2][0-9]|[0-9])(:|\.)?([0-6][0-9])", text)
@@ -45,6 +47,7 @@ def extract_time(text):
             time = str(match[0]) + ":" + str(match[2])
             times[time] = pos
     return times
+
 
 def extract_str_dates(text):
     def get_pattern(m):
@@ -57,13 +60,16 @@ def extract_str_dates(text):
         pattern_date_short = get_pattern(m)
         matches = re.findall(pattern_date, text, re.IGNORECASE)
         if len(matches) == 0:
-            matches = matches = re.findall(pattern_date_short, text, re.IGNORECASE)
-        filtered_match = [(tuple(x for x in _ if x))[0] for _ in matches] #remove empty cells in tuple and return 1st item
+            matches = matches = re.findall(
+                pattern_date_short, text, re.IGNORECASE)
+        # remove empty cells in tuple and return 1st item
+        filtered_match = [(tuple(x for x in _ if x))[0] for _ in matches]
         if filtered_match:
             d = str(filtered_match[0])
             pos = sum(re.search("".join(d), text).span())/2
             dates[d] = pos
     return dates
+
 
 def extract_dates(text):
     def process_dates(txt, dates):
@@ -90,27 +96,31 @@ def extract_dates(text):
         dates = process_dates(text, matches)
     return dates
 
-def pair_by_proximity(actors, key_actor):
-    def get_nearest_actor(a, a_pos, na, na_pos, ka_pos):
-        if abs(a_pos-ka_pos) < abs(na_pos-ka_pos):
-            return (a, a_pos)
+
+def pair_by_proximity(key_items, items):
+    def get_nearest_item(i, i_pos, near_i, near_i_pos, key_i_pos):
+        if abs(i_pos-key_i_pos) < abs(near_i_pos-key_i_pos):
+            return (i, i_pos)
         else:
-            return (na, na_pos)
-    actor_key_actor_pairs = []
-    for ka in key_actor:
-        nearest_actor = ""
-        nearest_actor_pos = 99999
-        for actor in actors:
-            actor_pos = actors[actor]
-            nearest_actor, nearest_actor_pos = get_nearest_actor(
-                actor, 
-                actor_pos, 
-                nearest_actor, 
-                nearest_actor_pos, 
-                key_actor[ka])
-        if (nearest_actor != "" and nearest_actor_pos != 99999):
-            actor_key_actor_pairs.append([ka, nearest_actor])
-    return actor_key_actor_pairs
+            return (near_i, near_i_pos)
+    item_key_item_pairs = []
+    for ki in key_items:
+        nearest_item = ""
+        nearest_item_pos = 99999
+        avail_items = items
+        for item in avail_items:
+            item_pos = avail_items[item]
+            nearest_item, nearest_item_pos = get_nearest_item(
+                item,
+                item_pos,
+                nearest_item,
+                nearest_item_pos,
+                key_items[ki])
+        if (nearest_item != "" and nearest_item_pos != 99999):
+            item_key_item_pairs.append([ki, nearest_item])
+            del avail_items[item]
+    return item_key_item_pairs
+
 
 def parse_sets(sets):
     cal = pdt.Calendar()
@@ -119,23 +129,31 @@ def parse_sets(sets):
         dt_string = set[0] + ' ' + set[1]
         time_struct, parse_status = cal.parse(dt_string)
         if parse_status:
-            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+            dt = datetime(
+                *time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
             # pytz.timezone('Europe/Copenhagen') gives +00:50 for some reason
             dts.append(dt)
-    dts.sort()
     return dts
 
 
-def parse_items(items):
+def parse_items(items, pairs):
+    def is_unique(item, pairs):
+        for pair in pairs:
+            time, date = pair
+            if item == time or item == date:
+                return False
+        return True
     cal = pdt.Calendar()
     dts = []
     for i in items:
-        time_struct, parse_status = cal.parse(i)
-        if parse_status:
-            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
-            dts.append(dt)
-    dts.sort()
+        if is_unique(i, pairs):
+            time_struct, parse_status = cal.parse(i)
+            if parse_status:
+                dt = datetime(
+                    *time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+                dts.append(dt)
     return dts
+
 
 def extract_datetime(text):
     signifiers = extract_signifiers(text)
@@ -143,20 +161,33 @@ def extract_datetime(text):
     times = extract_time(text)
     str_dates = extract_str_dates(text)
     pairs = pair_by_proximity(times, {**dates, **str_dates, **signifiers})
+    dts = []
+    print(signifiers)
     if pairs:
-        return parse_sets(pairs)
-    elif dates:
-        return parse_items(dates)
-    elif str_dates:
-        return parse_items(dates)
-    elif signifiers:
-        return parse_items(signifiers)
-    elif times:
-        return parse_items(times)
-    return []
+        parsed = parse_sets(pairs)
+        if parsed:
+            dts += parsed
+    if dates:
+        parsed = parse_items(dates, pairs)
+        if parsed:
+            dts += parsed
+    if str_dates:
+        parsed = parse_items(str_dates, pairs)
+        if parsed:
+            dts += parsed
+    if signifiers:
+        parsed = parse_items(signifiers, pairs)
+        if parsed:
+            dts += parsed
+    if times:
+        parsed = parse_items(times, pairs)
+        if parsed:
+            dts += parsed
+    dts.sort()
+    return dts
 
 if __name__ == '__main__':
-    text = "Hello Johan. Ignore the number 11:55. We would like to invite you for a crazy party begining today at 10:00 and ending 09.10 tomorrow"
+    text = "Hello Johan. Ignore the number. We would like to invite you for a crazy party begining today at 10:00 and ending tomorrow"
     #text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)

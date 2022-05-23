@@ -4,6 +4,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from random import randrange
 from neural_network.neuralClass import classify
+from server import writeToFile
 
 from credentials import getCreds
 
@@ -27,15 +28,34 @@ def createWatch():
   'type': 'web_hook',
   'address': 'https://elcaptaino.duckdns.org/newEvent'
 }).execute()
+    print(r)
 
 def newEvent(id):
     event = calendar.events().get(calendarId='primary', eventId=id).execute()
-    print(event)
-    if isBusy(event['start']['dateTime'],event['end']['dateTime'],id):
-        print('neeeeeeej')
-    else:
+    writeToFile('New event invitation. Checking for avalibility')
+    isBusy = isBusy(event['start']['dateTime'],event['end']['dateTime'],id)
+    event = eventResponse(id,isBusy,event)
+    if not isBusy:
+        writeToFile('Calendar free. Predicting event type...')
         label = classify(event['description'])
-        createEvent(event['summery'],event['summery'],label,event['start']['dateTime'],event['end']['dateTime'])
+        writeToFile('Event predicted as: ' + label)
+        event["summary"] = label + event["summary"]
+
+    writeToFile('Event updated, attenting:' + isBusy)
+    calendar.events().update(calendarId='primary', eventId=id,body=event).execute()
+    return isBusy
+
+
+def eventResponse(id, isBusy,event):
+    attendees = event.get('attendees')
+    for a in attendees:
+        if a.get('self') == True:
+            if isBusy:
+                a['responseStatus'] = "declined"
+            else:
+                a['responseStatus'] = "accepted"
+    return event
+
 
 
 
@@ -76,7 +96,6 @@ def createEvent(title,description, tag, timeMin, timeMax):
         }
     }
     r = calendar.events().insert(calendarId='primary', body=requestBody).execute()
-    print(r)
 
 def main(network_response):
     if isBusy(network_response['timeMin'],network_response['timeMax']):
