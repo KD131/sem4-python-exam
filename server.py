@@ -88,7 +88,7 @@ def catch_all():
 def newEvent():
     print('New event incoming')
     print(request)
-    json_data = request.get_json()
+    json_data = request.get_json(force=True)
     print(json_data)
     id = json_data["id"]
     if request.method == 'POST': 
