@@ -28,9 +28,11 @@ def webhook():
                 subject, body = msg
                 if not gmail.isSpam(body):
                     try:
+                        writeToFile('\n' +'New invitation incoming')
                         writeToFile('Predicting event type ...')
+                        writeToFile('Email text: '+body)
                         label = classify(body)
-                        writeToFile('Event labeled as' + label)
+                        writeToFile('Event labeled as: ' + label)
                         writeToFile('Predicting start and end for event ...')
                         times = extract_datetime(body)
                         #print("label:", label, "times:", times)
@@ -67,8 +69,8 @@ def webhook():
                         writeToFile('Insufficient data to build event. '+body)
                         return 'Insufficient data to build event.',500
                 else:
-                    print('was spawm')
-                    return 'u mama is spam',200
+                    print('Message was spam')
+                    return 'Message was spam',200
 
         else:
             return'no msg',200
@@ -87,18 +89,15 @@ def catch_all():
 @app.route('/newEvent',methods=['POST'])
 def newEvent():
     print('New event incoming')
-    print(request)
-    json_data = request.get_json()
-    print(json_data)
-    id = json_data["id"]
+    id = request.headers.get('X-Goog-Resource-ID')
     if request.method == 'POST': 
         try:
             events.newEvent(id)
             writeToFile('eventcreated')
             return 'success', 200
         except Exception as e:
-            print('Insufficient data to build event. ', e)
-            writeToFile('Insufficient data to build event. ')
+            #print('Insufficient data to build event. ', e)
+            #writeToFile('Insufficient data to build event. ')
             return 'ERROR',500
         
 
@@ -113,12 +112,12 @@ def clearLog():
 def writeToFile(printText):
     with open(filePath, "a") as file:
         currenttime = datetime.datetime.now()
-        file.write(str(currenttime)+":"+printText)
+        file.write(str(currenttime)+":"+printText + '\n')
 
 
 if __name__ == '__main__':
     getCreds()
     watch = gmail.createWatch()
-    events.createWatch()
+    #events.createWatch()
     most_recent_history_id = watch['historyId']
     app.run(host='0.0.0.0', port=8000)

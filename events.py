@@ -28,6 +28,7 @@ def createWatch():
   'type': 'web_hook',
   'address': 'https://elcaptaino.duckdns.org/newEvent'
 }).execute()
+    print(r)
 
 def newEvent(id):
     event = calendar.events().get(calendarId='primary', eventId=id).execute()
