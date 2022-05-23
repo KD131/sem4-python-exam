@@ -28,6 +28,7 @@ def webhook():
                 subject, body = msg
                 if not gmail.isSpam(body):
                     try:
+                        writeToFile('\n' +'New invitation incoming')
                         writeToFile('Predicting event type ...')
                         label = classify(body)
                         writeToFile('Event labeled as: ' + label)
