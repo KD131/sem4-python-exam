@@ -106,12 +106,15 @@ def send_mail(body, to=None, subject=None, reply_to=None):
         subject = get_header('Subject', reply_to)
         id = get_header('Message-ID', reply_to)
         message['In-Reply-To'] = id
-        message['References'] = get_header('References', reply_to) + " " + id
+        references = get_header('References', reply_to)
+        if not references:
+            references = get_header('In-Reply-To')
+        if references:
+            message['References'] = references + " " + id
         mail['threadId'] = get_thread_id(reply_to)
 
     message['To'] = to
     message['Subject'] = subject
-    print(message)
     encoded = base64.urlsafe_b64encode(message.as_bytes()).decode()
     mail['raw'] = encoded
 
