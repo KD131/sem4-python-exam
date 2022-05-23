@@ -87,13 +87,7 @@ def catch_all():
 @app.route('/newEvent',methods=['POST'])
 def newEvent():
     print('New event incoming')
-    print(request.headers)
-    print(request.mimetype)
-    print(request.get_data())
-    json_data = request.get_json(force=True)
-    
-    print(json_data)
-    id = json_data["id"]
+    id = request.headers.get('X-Goog-Resource-ID')
     if request.method == 'POST': 
         try:
             events.newEvent(id)
