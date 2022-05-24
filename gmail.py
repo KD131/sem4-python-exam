@@ -56,14 +56,17 @@ def createWatch():
 
 def getEmailsFromHistory(history_id):
     res = gmail.users().history().list(userId='me', startHistoryId=history_id).execute()
+    print(res)
     # message_ids = [message['id'] for message in history['messages'] for history in res['history']]
     history = res.get('history')
     messages = []
     if history:
         message_ids = []
         for hist in history:
-            for message in hist['messagesAdded']:
-                message_ids.append(message['id'])
+            msgsAdded = hist.get('messagesAdded')
+            if msgsAdded:
+                for msg in msgsAdded:
+                    message_ids.append(msg['message']['id'])
         
         
         for id in message_ids:
@@ -141,9 +144,9 @@ if __name__ == '__main__':
     # print(json.dumps(res, indent=4))
     # for m in messages:
     #     print(m)
-    # mail = get_most_recent(0)
-    body = 'this is a message'
-    print(send_mail(body, to='pythondiller2@gmail.com', subject='Test sent'))
+    mail = get_most_recent(0)
+    # body = 'this is a message'
+    # print(send_mail(body, to='pythondiller2@gmail.com', subject='Test sent'))
 
 
 #deprecated
