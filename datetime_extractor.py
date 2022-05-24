@@ -66,7 +66,7 @@ def extract_str_dates(text):
         filtered_match = [(tuple(x for x in _ if x))[0] for _ in matches]
         if filtered_match:
             d = str(filtered_match[0])
-            print("d",d)
+            #print("d", d)
             pos = sum(re.search("".join(d), text).span())/2
             d = d.replace(" of ", " ")
             dates[d] = pos
@@ -127,11 +127,12 @@ def parse_sets(sets):
     dts = []
     for set in sets:
         dt_string = set[1] + ' at ' + set[0]
-        print("dt_string", dt_string)
+        #print("dt_string", dt_string)
         time_struct, parse_status = cal.parse(dt_string)
         if parse_status:
-            dt = datetime(*time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
-            print("dt", dt)
+            dt = datetime(
+                *time_struct[:6], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+            #print("dt", dt)
             # pytz.timezone('Europe/Copenhagen') gives +00:50 for some reason
             dts.append(dt)
     return dts
@@ -150,7 +151,8 @@ def parse_items(items, pairs):
         if is_unique(i, pairs):
             time_struct, parse_status = cal.parse(i)
             if parse_status:
-                dt = datetime(*time_struct[:3], tzinfo=timezone(timedelta(hours=+2))).isoformat()
+                dt = datetime(
+                    *time_struct[:3], tzinfo=timezone(timedelta(hours=+2))).isoformat()
                 #print("dt", dt)
                 date, time = dt.split("T")
                 #print("date", date, "time", time)
@@ -190,7 +192,7 @@ def extract_datetime(text):
     dates = {**num_dates, **str_dates, **signifiers}
     #print("d", dates)
     times = extract_time(text)
-    #print(times)
+    # print(times)
     pairs = pair_by_proximity(times, dates)
     dts = []
     if pairs:
@@ -199,16 +201,16 @@ def extract_datetime(text):
             dts += parsed
     if dates:
         parsed = parse_items(dates, pairs)
-        #print("p",parsed)
+        # print("p",parsed)
         if parsed:
             dts += parsed
-  
+
     dts = auto_fill_endtime(dts)
     return dts
 
-
 if __name__ == '__main__':
     text = "There is a party at the 11th of july 10:00. It ends at 16:00. Also party at 22/01/23 at 14:00 and at aug 13 00:00"
+    text = "If you would come by my office after work, let's say Tuesday at 17:00, we can discuss that business matter you brought up earlier. We should be done by 19:00"
     # text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)
