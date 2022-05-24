@@ -167,7 +167,7 @@ def parse_items(items, pairs):
 
 def extract_datetime(text):
     def auto_fill_endtime(dts):
-        if len(dts) == 1:
+        if len(dts) == 1: 
             date, time = dts[0].split("T")
             end = list(time)
             if len(time) == 14:

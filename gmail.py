@@ -1,10 +1,13 @@
 import base64
+import json
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-import json
-
 from credentials import getCreds
+
 
 def getService():
     try:
@@ -44,6 +47,7 @@ def getPlainText(mail):
 def createWatch():
     request = {
         'labelIds': ['INBOX'],
+        "labelFilterAction": "include",
         'topicName': 'projects/exam-project-349112/topics/exam-project-349112-topic'
         }
 
@@ -65,17 +69,21 @@ def getEmailsFromHistory(history_id):
         for id in message_ids:
             mail = gmail.users().messages().get(userId='me', id=id).execute()
             mail_body = getPlainText(mail)
-            mail_subject = get_subject(mail)
-            messages.append((mail_subject, mail_body))
+            mail_subject = get_header('Subject', mail)
+            # can be refactored to a dict or just return mail and call the get methods from server.py
+            messages.append((mail_subject, mail_body, mail))
 
     return res, messages
 
-def get_subject(mail):
+def get_header(header,mail):
     payload = mail['payload']
     headers = payload['headers']
     for h in headers:
-        if h['name'] == 'Subject':
+        if h['name'] == header:
             return h['value']
+
+def get_thread_id(mail):
+    return mail['threadId']
 
 
 def isSpam(body):
@@ -84,6 +92,34 @@ def isSpam(body):
         return True
     else:
         return False
+
+def send_mail(body, to=None, subject=None, reply_to=None):
+    if not (to or reply_to):
+        raise Exception("Must have recipient either as to= or be a reply")
+    if not (subject or reply_to):
+        raise Exception("Must have subject either as subject= or be a reply")
+
+    message = MIMEText(body)
+    mail = {}
+
+    if reply_to:
+        to = get_header('Return-Path', reply_to)
+        subject = get_header('Subject', reply_to)
+        id = get_header('Message-ID', reply_to)
+        message['In-Reply-To'] = id
+        references = get_header('References', reply_to)
+        if not references:
+            references = get_header('In-Reply-To',reply_to)
+        if references:
+            message['References'] = references + " " + id
+        mail['threadId'] = get_thread_id(reply_to)
+
+    message['To'] = to
+    message['Subject'] = subject
+    encoded = base64.urlsafe_b64encode(message.as_bytes()).decode()
+    mail['raw'] = encoded
+
+    return gmail.users().messages().send(userId='me', body=mail).execute()
 
 
 
@@ -94,6 +130,7 @@ def get_most_recent(n=0):
     messages = res.get('messages')
     if messages:
         id = messages[n]['id']
+        print(id)
         mail = gmail.users().messages().get(userId='me', id=id).execute()
         pretty = json.dumps(mail, indent=4)
         print(pretty)
@@ -104,8 +141,9 @@ if __name__ == '__main__':
     # print(json.dumps(res, indent=4))
     # for m in messages:
     #     print(m)
-    mail = get_most_recent(1)
-    print(get_subject(mail))
+    mail = get_most_recent(0)
+    body = 'this is a message'
+    # print(send_mail(body, reply_to=mail))
 
 
 #deprecated

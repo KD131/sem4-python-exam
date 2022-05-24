@@ -25,7 +25,7 @@ def webhook():
         most_recent_history_id = res['historyId']
         if(messages):
             for msg in messages:
-                subject, body = msg
+                subject, body, mail = msg
                 if not gmail.isSpam(body):
                     try:
                         writeToFile('\n' +'New invitation incoming')
@@ -36,34 +36,35 @@ def webhook():
                         writeToFile('Predicting start and end for event ...')
                         times = extract_datetime(body)
                         #print("label:", label, "times:", times)
+
                         if len(times) == 0: 
                             print("No datetime found.")
                             writeToFile("No datetime found.")
-                            raise("No datetime found.")
+                            raise Exception('No datetime found.')
                         else:
                             writeToFile('Event start predicted to: '+ times[0])
                             writeToFile('Event end predicted to: '+ times[1])
-                        names = extract_names(body)
-                        description = body
-                        if names:
-                            description = "Persons: " + names + ". Text: " + body
-                        network_response = {
-                            'title': subject,
-                            'description': description,
-                            'tag': label,  # social/business
-                            'timeMin': times[0],
-                            'timeMax': times[1]
-                        }
-                        #print("network_response: ", network_response)
-                        writeToFile('Checking calender for availability ...')
-                        success = events.main(network_response)
-                        if success:
-                            print("SUCCESS: ",subject) 
-                            writeToFile(label+body + " - event created: " + str(success))
-                        else:
-                            writeToFile('Calender is occupied, event not created')
-                            print("FAIL: ",subject)
-                        return 'success', 200
+                            names = extract_names(body)
+                            description = body
+                            if names:
+                                description = "Persons: " + names + ". Text: " + body
+                            network_response = {
+                                'title': subject,
+                                'description': description,
+                                'tag': label,  # social/business
+                                'timeMin': times[0],
+                                'timeMax': times[1]
+                            }
+                            #print("network_response: ", network_response)
+                            writeToFile('Checking calender for availability ...')
+                            success = events.main(network_response, mail)
+                            if success:
+                                print("SUCCESS: ",subject) 
+                                writeToFile(label+body + " - event created: " + str(success))
+                            else:
+                                writeToFile('Calender is occupied, event not created')
+                                print("FAIL: ",subject)
+                            return 'success', 200
                     except Exception as e:
                         print('Insufficient data to build event. ', e)
                         writeToFile('Insufficient data to build event. '+body)

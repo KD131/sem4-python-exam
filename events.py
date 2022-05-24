@@ -3,6 +3,7 @@ import uuid
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from random import randrange
+from gmail import send_mail
 from neural_network.neuralClass import classify
 from server import writeToFile
 
@@ -97,15 +98,17 @@ def createEvent(title,description, tag, timeMin, timeMax):
     }
     r = calendar.events().insert(calendarId='primary', body=requestBody).execute()
 
-def main(network_response):
+def main(network_response, mail):
     if isBusy(network_response['timeMin'],network_response['timeMax']):
         #skriv en mail retur vi ikke kan
+        send_mail("I'm sorry, but I'm busy at that time.", reply_to=mail)
         print('nej')
         return False
     else:
         createEvent(**network_response)
         #lave et eller andet der bekræfter vi har fået noget i kalenderen.
         #skriv email til sender at vi kan
+        send_mail("I look forward to it!", reply_to=mail)
         return True
       
 if __name__ == '__main__':
