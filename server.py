@@ -36,7 +36,6 @@ def webhook():
                         writeToFile('Predicting start and end for event ...')
                         times = extract_datetime(body)
                         #print("label:", label, "times:", times)
-                        print(times)
                         if len(times) == 0: 
                             print("No datetime found.")
                             writeToFile("No datetime found.")
