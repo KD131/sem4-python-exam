@@ -101,7 +101,7 @@ def createEvent(title,description, tag, timeMin, timeMax):
 def main(network_response, mail):
     if isBusy(network_response['timeMin'],network_response['timeMax']):
         #skriv en mail retur vi ikke kan
-        send_mail("I'm sorry, but I'm busy at that time.", reply_to=mail)
+        send_mail("I'm sorry, but I'm busy at that time. try me at friday 14:00", reply_to=mail)
         print('nej')
         return False
     else:
