@@ -47,6 +47,7 @@ def getPlainText(mail):
 def createWatch():
     request = {
         'labelIds': ['INBOX'],
+        "labelFilterAction": "include",
         'topicName': 'projects/exam-project-349112/topics/exam-project-349112-topic'
         }
 
