@@ -127,7 +127,7 @@ def parse_sets(sets):
     dts = []
     for set in sets:
         dt_string = set[1] + ' at ' + set[0]
-        print("dt_string", dt_string)
+        #print("dt_string", dt_string)
         time_struct, parse_status = cal.parse(dt_string)
         if parse_status:
             dt = datetime(
