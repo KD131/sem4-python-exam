@@ -149,6 +149,6 @@ if __name__ == '__main__':
 
     new_doc = "Hello Diller Mand. We would like to get you in to have a meeting with us. Because we think you are good at IT and would be perfect for our Job applicaiton"
 
-    classify(new_doc)
+    #classify(new_doc)
 
     print('done')
