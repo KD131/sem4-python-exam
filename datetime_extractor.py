@@ -153,21 +153,21 @@ def parse_items(items, pairs):
             if parse_status:
                 dt = datetime(
                     *time_struct[:3], tzinfo=timezone(timedelta(hours=+2))).isoformat()
-                print("dt", dt)
+                #print("dt", dt)
                 date, time = dt.split("T")
                 #print("date", date, "time", time)
                 time_split = list(time)
                 time_split[1] = str(9)
                 time_nine = "".join(time_split)
                 #print("join", date + "T" + time_nine)
-                dt = date + "DT" + time_nine
+                dt = date + "T" + time_nine
                 dts.append(dt)
     return dts
 
 
 def extract_datetime(text):
     def auto_fill_endtime(dts):
-        print("dts", dts)
+        #print("dts", dts)
         if len(dts) == 1: 
             date, time = dts[0].split("T")
             end = list(time)
@@ -213,7 +213,11 @@ def extract_datetime(text):
 if __name__ == '__main__':
     #text = "There is a party at the 11th of july 10:00. It ends at 16:00. Also party at 22/01/23 at 14:00 and at aug 13 00:00"
     #text = "If you would come by my office after work, let's say Tuesday at 17:00, we can discuss that business matter you brought up earlier. We should be done by 19:00"
-    text = '''My name is tuesday'''
+    text = '''Here at Financial Holdings, we value integrity, robustness, reliability, and other such vague corporate buzzwords. We want you to come in for a scheduled meeting the 27/05 at 12:00 and you're not leaving until 27/05 14:00. I trust we can come to a satisfactory conclusion, at least for us as it might end in your termination.
+
+We'll be seeing you. Always.
+
+Beatrice Meagan, Financial Holdings HR Department'''
     # text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)
