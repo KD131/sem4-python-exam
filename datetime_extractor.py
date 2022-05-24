@@ -206,7 +206,7 @@ def extract_datetime(text):
             dts += parsed
 
     dts = auto_fill_endtime(dts)
-    print('dts: ' + dts)
+    print(dts)
     return dts
 
 if __name__ == '__main__':
