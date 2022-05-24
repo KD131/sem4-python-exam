@@ -53,6 +53,8 @@ Tjek dit response på link: https://elcaptaino.duckdns.org/.
 Programmet er opdelt i 2. Email invitationer & Calendar invitationer.
 Email invitationer er færdigbygget, men med begrænsninger for formuleringen af emailen.
  - En email kan modtages, håndteres og derefter lægges i kalenderen.
+  - Vi har dog et tilbagevendende problem med memory allocation. Vi får følgende fejl:"double free or corruptin(!prev) Aborted (core dumped)" der nogle gange crasher vores server. Der er en fejl i C som vi har haft udfordringer med at håndtere. 
+
 Vi har lidt udfordringer med forskellige tidspunktformuleringer.
 
 Da vi selv har måtte lave træningsdata og derfor har et ret smalt datasæt, så for at vores neural netværk skal virke optimalt, skal man bruge nogle buzzwords i den givne kategori.
