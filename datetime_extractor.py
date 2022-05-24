@@ -153,7 +153,7 @@ def parse_items(items, pairs):
             if parse_status:
                 dt = datetime(
                     *time_struct[:3], tzinfo=timezone(timedelta(hours=+2))).isoformat()
-                print("dt", dt)
+                #print("dt", dt)
                 date, time = dt.split("T")
                 #print("date", date, "time", time)
                 time_split = list(time)
@@ -167,7 +167,7 @@ def parse_items(items, pairs):
 
 def extract_datetime(text):
     def auto_fill_endtime(dts):
-        print("dts", dts)
+        #print("dts", dts)
         if len(dts) == 1: 
             date, time = dts[0].split("T")
             end = list(time)
