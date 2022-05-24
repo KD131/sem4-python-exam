@@ -141,9 +141,9 @@ if __name__ == '__main__':
     # print(json.dumps(res, indent=4))
     # for m in messages:
     #     print(m)
-    mail = get_most_recent(0)
+    # mail = get_most_recent(0)
     body = 'this is a message'
-    # print(send_mail(body, reply_to=mail))
+    print(send_mail(body, to='pythondiller2@gmail.com', subject='Test sent'))
 
 
 #deprecated
