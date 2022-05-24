@@ -78,3 +78,4 @@ Datetime extractor forsøger at finde et start og sluttidspunkt i teksten via re
 * End to End
 * Google Pub/Sub service
 * Google API
+* datetime forståelse
