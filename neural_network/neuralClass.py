@@ -142,12 +142,10 @@ def classify(text):
 
 
 if __name__ == '__main__':
-    #create_data_set()
-    #docs = setup_docs()
-
-    #print_frequency_dist(docs)
-
-    #train_classifier(docs)
+    create_data_set()
+    docs = setup_docs()
+    print_frequency_dist(docs)
+    train_classifier(docs)
 
     new_doc = "Hello Diller Mand. We would like to get you in to have a meeting with us. Because we think you are good at IT and would be perfect for our Job applicaiton"
 
