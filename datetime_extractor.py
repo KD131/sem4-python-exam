@@ -184,7 +184,7 @@ def extract_datetime(text):
                     a, b = list(new_time)
                     end[0] = a
                     end[1] = b
-            dts.append(date + "T".join(end))
+            dts.append(date + "T" + "".join(end))
         return dts
     signifiers = extract_signifiers(text)
     num_dates = extract_dates(text)
