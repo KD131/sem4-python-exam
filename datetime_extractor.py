@@ -183,7 +183,7 @@ def extract_datetime(text):
                     a, b = list(new_time)
                     end[0] = a
                     end[1] = b
-            dts.append("".join(end))
+            dts.append(date + "".join(end))
         return dts
     signifiers = extract_signifiers(text)
     num_dates = extract_dates(text)
@@ -210,8 +210,13 @@ def extract_datetime(text):
     return dts
 
 if __name__ == '__main__':
-    text = "There is a party at the 11th of july 10:00. It ends at 16:00. Also party at 22/01/23 at 14:00 and at aug 13 00:00"
-    text = "If you would come by my office after work, let's say Tuesday at 17:00, we can discuss that business matter you brought up earlier. We should be done by 19:00"
+    #text = "There is a party at the 11th of july 10:00. It ends at 16:00. Also party at 22/01/23 at 14:00 and at aug 13 00:00"
+    #text = "If you would come by my office after work, let's say Tuesday at 17:00, we can discuss that business matter you brought up earlier. We should be done by 19:00"
+    text = '''Here at Financial Holdings, we value integrity, robustness, reliability, and other such vague corporate buzzwords. We want you to come in for a scheduled meeting the 27/05 at 12:00 and you're not leaving until 27/05 14:00. I trust we can come to a satisfactory conclusion, at least for us as it might end in your termination.
+
+We'll be seeing you. Always.
+
+Beatrice Meagan, Financial Holdings HR Department'''
     # text = "Hej Johan."
     datetime = extract_datetime(text)
     print(text)
