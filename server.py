@@ -91,7 +91,6 @@ def catch_all():
 
 @app.route('/newEvent',methods=['POST'])
 def newEvent():
-    print('New event incoming')
     id = request.headers.get('X-Goog-Resource-ID')
     if request.method == 'POST': 
         try:
