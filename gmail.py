@@ -75,7 +75,7 @@ def getEmailsFromHistory(history_id):
 
     return res, messages
 
-def get_header(header, mail):
+def get_header(header,mail):
     payload = mail['payload']
     headers = payload['headers']
     for h in headers:
@@ -109,7 +109,7 @@ def send_mail(body, to=None, subject=None, reply_to=None):
         message['In-Reply-To'] = id
         references = get_header('References', reply_to)
         if not references:
-            references = get_header('In-Reply-To')
+            references = get_header('In-Reply-To',reply_to)
         if references:
             message['References'] = references + " " + id
         mail['threadId'] = get_thread_id(reply_to)
