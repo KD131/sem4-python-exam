@@ -62,15 +62,14 @@ Logik og Google API er færdigbygget. Desværre har vi haft udfordringer med at 
 
 ## Forståelse af tid og dato
 Datetime extractor forsøger at finde et start og sluttidspunkt i teksten via regex.
-Via regex kan den finde datoer og tidspunkter.
-Tidspunkter kan skrives som "XX:XX" eller "XX.XX".
-Datoer kan skrives som relativ tid (today, tomorrow), numeriske datoer (XX/XX/XX) eller som tal og ord (15 june, june 15, 15st of june, etc)
-Den deler herefter datoer og tid op i par, baseret på afstrand fra hinanden.
-Hvis der er 1 dato og flere tidspunkter, går den ud fra datoen gælder for alle tidspunkter.
-Hvis der er flere datoer og et tidspunkt, indgår tidspunkt i et par med den nærmeste dato, og resten får et standard tidspunkt.
-Hvis der kun er datoer får de et standard tidspunkt.
-Hvis der kun er et resultat, oprettes der automatisk et sluttidspunkt 2 timer senere.
-Alle resultater retuneres i iso format.
+- Tidspunkter kan skrives som "XX:XX" eller "XX.XX".
+- Datoer kan skrives som relativ tid (today, tomorrow), numeriske datoer (XX/XX/XX) eller som tal og ord (15 june, june 15, 15st of june, etc)
+- Den deler herefter datoer og tid op i par, baseret på afstrand fra hinanden.
+- Hvis der er 1 dato og flere tidspunkter, går den ud fra datoen gælder for alle tidspunkter.
+- Hvis der er flere datoer og et tidspunkt, indgår tidspunkt i et par med den nærmeste dato, og resten får et standard tidspunkt.
+- Hvis der kun er datoer får de et standard tidspunkt.
+- Hvis der kun er et resultat, oprettes der automatisk et sluttidspunkt 2 timer senere.
+- Alle resultater retuneres i iso format.
 
 ## 7. Hvad vi vil highlighte
 * Neural Netværk klassen.
