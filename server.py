@@ -26,6 +26,8 @@ def webhook():
         if(messages):
             for msg in messages:
                 subject, body, mail = msg
+                if 'SENT' in mail['labelIds']:
+                    return ("We sent this message", 200)
                 if not gmail.isSpam(body):
                     try:
                         writeToFile('\n' +'New invitation incoming')
@@ -78,7 +80,7 @@ def webhook():
     else:
         print(request)
         writeToFile(abort(400))
-        return 'megaFail',500
+        return 'megaFail',200
         
 
 @app.route('/')
