@@ -39,7 +39,7 @@ def webhook():
                         if len(times) == 0: 
                             print("No datetime found.")
                             writeToFile("No datetime found.")
-                            raise("No datetime found.")
+                            raise ValueError("No datetime found.")
                         else:
                             writeToFile('Event start predicted to: '+ times[0])
                             writeToFile('Event end predicted to: '+ times[1])
