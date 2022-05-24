@@ -80,7 +80,7 @@ def webhook():
     else:
         print(request)
         writeToFile(abort(400))
-        return 'megaFail',500
+        return 'megaFail',200
         
 
 @app.route('/')
