@@ -62,7 +62,7 @@ def getEmailsFromHistory(history_id):
     if history:
         message_ids = []
         for hist in history:
-            for message in hist['messages']:
+            for message in hist['messagesAdded']:
                 message_ids.append(message['id'])
         
         
