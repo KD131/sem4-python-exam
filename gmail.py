@@ -82,7 +82,9 @@ def get_header(header,mail):
     payload = mail['payload']
     headers = payload['headers']
     for h in headers:
-        if h['name'] == header:
+        # We check .lower() because ID specifically might vary in case between application, or at least messages sent from the Python client.
+        # Another fix is to just check both those cases of ID.
+        if h['name'].lower() == header.lower():
             return h['value']
 
 def get_thread_id(mail):
@@ -112,13 +114,16 @@ def send_mail(body, to=None, subject=None, reply_to=None):
             # but it does let you reply to yourself if From is just your address, which it is
             to = get_header('From', reply_to)
         subject = get_header('Subject', reply_to)
-        id = get_header('Message-Id', reply_to)
+        # ID could also be Id, maybe when sent from the python client library.
+        id = get_header('Message-ID', reply_to)
         message['In-Reply-To'] = id
         references = get_header('References', reply_to)
         if not references:
             references = get_header('In-Reply-To', reply_to)
         if references:
             message['References'] = references + " " + id
+        else:
+            message['References'] = id
         mail['threadId'] = get_thread_id(reply_to)
 
     message['To'] = to
@@ -149,11 +154,11 @@ if __name__ == '__main__':
     # for m in messages:
     #     print(m)
     # mail = get_most_recent(0)
-    # mail = gmail.users().messages().get(userId='me', id='').execute()
+    mail = gmail.users().messages().get(userId='me', id='18101a5b4ffd6867').execute()
     # print(json.dumps(mail, indent=4))
-    # body = 'this is another reply'
+    body = 'this is a reply'
     # print(send_mail(body, to='pythondiller2@gmail.com', subject='Test sent'))
-    # print(send_mail(body, reply_to=mail))
+    print(send_mail(body, reply_to=mail))
     pass
 
 
