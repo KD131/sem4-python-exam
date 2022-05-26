@@ -107,12 +107,16 @@ def send_mail(body, to=None, subject=None, reply_to=None):
 
     if reply_to:
         to = get_header('Return-Path', reply_to)
+        if not to:
+            # this is probably not the correct way to get the return address,
+            # but it does let you reply to yourself if From is just your address, which it is
+            to = get_header('From', reply_to)
         subject = get_header('Subject', reply_to)
-        id = get_header('Message-ID', reply_to)
+        id = get_header('Message-Id', reply_to)
         message['In-Reply-To'] = id
         references = get_header('References', reply_to)
         if not references:
-            references = get_header('In-Reply-To',reply_to)
+            references = get_header('In-Reply-To', reply_to)
         if references:
             message['References'] = references + " " + id
         mail['threadId'] = get_thread_id(reply_to)
@@ -144,9 +148,13 @@ if __name__ == '__main__':
     # print(json.dumps(res, indent=4))
     # for m in messages:
     #     print(m)
-    mail = get_most_recent(0)
-    # body = 'this is a message'
+    # mail = get_most_recent(0)
+    # mail = gmail.users().messages().get(userId='me', id='').execute()
+    # print(json.dumps(mail, indent=4))
+    # body = 'this is another reply'
     # print(send_mail(body, to='pythondiller2@gmail.com', subject='Test sent'))
+    # print(send_mail(body, reply_to=mail))
+    pass
 
 
 #deprecated
