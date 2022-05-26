@@ -26,8 +26,9 @@ def webhook():
         if(messages):
             for msg in messages:
                 subject, body, mail = msg
-                # if 'SENT' in mail['labelIds']:
-                #     return ("We sent this message", 200)
+                labelIds = mail['labelIds']
+                if any(map(lambda v: v in ['SENT', 'TRASH'], labelIds)) or 'UNREAD' not in labelIds:    # ignore sent, deleted, or anything already read
+                    continue
                 if not gmail.isSpam(body):
                     try:
                         writeToFile('\n' +'New invitation incoming')
@@ -74,7 +75,7 @@ def webhook():
                 else:
                     print('Message was spam')
                     return 'Message was spam',200
-
+            return'no msg',200
         else:
             return'no msg',200
     else:
