@@ -56,7 +56,6 @@ def createWatch():
 
 def getEmailsFromHistory(history_id):
     res = gmail.users().history().list(userId='me', startHistoryId=history_id).execute()
-    print(res)
     # message_ids = [message['id'] for message in history['messages'] for history in res['history']]
     history = res.get('history')
     messages = []
